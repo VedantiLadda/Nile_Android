@@ -5,12 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include layout="@layout/toolbar" />
+
     <android.support.constraint.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="443dp" />
+        app:layout_constraintGuide_begin="467dp" />
 
     <Button
         android:id="@+id/back"
@@ -40,8 +42,8 @@
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="368dp"
-        android:layout_height="427dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="378dp"
+        android:layout_marginTop="80dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -13,9 +13,11 @@ import java.util.List;
 public class BuyAdaptor extends RecyclerView.Adapter<BuyAdaptor.BuyHolder> {
 
     private List<Product> products;
+    private BuyInterface buyInterface;
 
-    public BuyAdaptor(List<Product> products) {
+    public BuyAdaptor(List<Product> products, BuyInterface buyInterface) {
         this.products = products;
+        this.buyInterface = buyInterface;
     }
 
     @NonNull
@@ -30,6 +32,11 @@ public class BuyAdaptor extends RecyclerView.Adapter<BuyAdaptor.BuyHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull BuyAdaptor.BuyHolder buyHolder, int i) {
+
+        //buyHolder.txtsno.setText(i);//i is anyway continous numbers...
+        buyHolder.txtproname.setText(products.get(i).getProductName());
+        buyHolder.txtproprice.setText(products.get(i).getProductprice());
+
 
         //set the values.. from
 
@@ -54,5 +61,9 @@ public class BuyAdaptor extends RecyclerView.Adapter<BuyAdaptor.BuyHolder> {
 
         }
     }
+
+}
+interface BuyInterface{
+
 
 }
