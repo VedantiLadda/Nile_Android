@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Ecommerce</string>
+    <string name="app_name">Login Page</string>
+    <string name="app_name_1">Signup Page</string>
+
 </resources>
