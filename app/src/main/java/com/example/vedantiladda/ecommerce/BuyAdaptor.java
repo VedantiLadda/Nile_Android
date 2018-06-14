@@ -1,5 +1,7 @@
 package com.example.vedantiladda.ecommerce;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,14 +10,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.vedantiladda.ecommerce.model.ProductDTO;
+
 import java.util.List;
 
 public class BuyAdaptor extends RecyclerView.Adapter<BuyAdaptor.BuyHolder> {
 
-    private List<Product> products;
+    private List<ProductDTO> products;
     private BuyInterface buyInterface;
+    public static double priceSum=0;
 
-    public BuyAdaptor(List<Product> products, BuyInterface buyInterface) {
+
+
+    public BuyAdaptor(List<ProductDTO> products, BuyInterface buyInterface) {
         this.products = products;
         this.buyInterface = buyInterface;
     }
@@ -35,9 +42,10 @@ public class BuyAdaptor extends RecyclerView.Adapter<BuyAdaptor.BuyHolder> {
 
         //buyHolder.txtsno.setText(i);//i is anyway continous numbers...
         buyHolder.txtproname.setText(products.get(i).getProductName());
-        buyHolder.txtproprice.setText(products.get(i).getProductprice());
-
-
+        buyHolder.txtproprice.setText(products.get(i).getPrice());
+        buyHolder.txtsno.setText(""+i);
+        double price =  products.get(i).getPrice();
+        priceSum = priceSum + price;
         //set the values.. from
 
     }
@@ -65,5 +73,5 @@ public class BuyAdaptor extends RecyclerView.Adapter<BuyAdaptor.BuyHolder> {
 }
 interface BuyInterface{
 
-
+//public void priceSum(double pricesum);
 }

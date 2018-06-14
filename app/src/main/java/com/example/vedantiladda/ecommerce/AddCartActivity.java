@@ -24,7 +24,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class Cart_Activity extends AppCompatActivity implements CartInterface{
+public class AddCartActivity extends AppCompatActivity implements CartInterface{
+
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -41,10 +42,8 @@ public class Cart_Activity extends AppCompatActivity implements CartInterface{
     String userId = sharedPreferences.getString("userId",null);
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recyclerview);
         Log.i("application", "onCreate:of cart activity ");
@@ -58,7 +57,7 @@ public class Cart_Activity extends AppCompatActivity implements CartInterface{
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new CartAdaptor(productList,Cart_Activity.this);
+        mAdapter = new CartAdaptor(productList,AddCartActivity.this);
         mRecyclerView.setAdapter(mAdapter);
 
         Button buy =(Button) findViewById(R.id.buy);
@@ -66,72 +65,59 @@ public class Cart_Activity extends AppCompatActivity implements CartInterface{
             @Override
             public void onClick(View view) {
                 Log.i("application", "onClick of checkout button: ");
-                Intent intent = new Intent(Cart_Activity.this, BuyActivity.class);
+                Intent intent = new Intent(AddCartActivity.this, BuyActivity.class);
                 Log.i("application", "onClick: next step is to start the intent ");
                 startActivity(intent);
             }
         });
 
+        Intent intent1 = getIntent();
+        String productId = intent1.getStringExtra("productId");
+        String merchantId = intent1.getStringExtra("merchantId");
+
 
         IApiCall iApiCall = retrofit.create(IApiCall.class);
-        final Call<List<ProductDTO>> getCartId = iApiCall.getCartId(userId);
-
-//        Product product1=new Product();
-//        product1.setBrand("Samsung1");
-//        product1.setProductName("Galaxy61");
-//        product1.setProductprice("57831.00");
-//        product1.setImageUrl("https://www.static-src.com/wcsstore/Indraprastha/images/catalog/medium/MTA-2165006/samsung_samsung-galaxy-j7-duo-smartphone---gold--32gb--3gb--o-_full09.jpg");
-//        Product product2=new Product();
-//        product2.setBrand("Samsung2");
-//        product2.setProductName("Galaxy62");
-//        product2.setProductprice("57832.00");
-//        product2.setImageUrl("https://www.static-src.com/wcsstore/Indraprastha/images/catalog/medium/MTA-2165006/samsung_samsung-galaxy-j7-duo-smartphone---gold--32gb--3gb--o-_full09.jpg");
-//
-//        Product product3=new Product();
-//        product3.setBrand("Samsung3");
-//        product3.setProductName("Galaxy63");
-//        product3.setProductprice("57833.00");
-//        product3.setImageUrl("https://www.static-src.com/wcsstore/Indraprastha/images/catalog/medium/MTA-2165006/samsung_samsung-galaxy-j7-duo-smartphone---gold--32gb--3gb--o-_full09.jpg");
-//
-//        Product product4=new Product();
-//        product4.setBrand("Samsung4");
-//        product4.setProductName("Galaxy64");
-//        product4.setProductprice("578344.00");
-//        product4.setImageUrl("https://www.static-src.com/wcsstore/Indraprastha/images/catalog/medium/MTA-2165006/samsung_samsung-galaxy-j7-duo-smartphone---gold--32gb--3gb--o-_full09.jpg");
-//
-//        productList.clear();
-//        productList.add(product1);
-//        productList.add(product2);
-//        productList.add(product3);
-//        productList.add(product4);
-//        mAdapter.notifyDataSetChanged();
-
-        //product.setImageUrl(https://www.google.com/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwipi_yjqdDbAhVGs48KHdUuCl8QjRx6BAgBEAU&url=https%3A%2F%2Fgadgets.ndtv.com%2Fsamsung-galaxy-j6-5454&psig=AOvVaw1NUnggLIf4Bvnn2RI6ivfs&ust=1528968398070531);
-
-        // this is the call to fet the cart product list
-        getCartId.enqueue(new Callback<List<ProductDTO>>() {
+        final Call<Void> addProduct = iApiCall.addProduct(userId,productId,merchantId);
+        addProduct.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
-                productList.clear();
-                productList.addAll(response.body());
-                mAdapter.notifyDataSetChanged();
-                Toast.makeText(Cart_Activity.this, "passed", Toast.LENGTH_LONG).show();
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                Log.i("application", "trying to refresh the view ");
+
+                IApiCall iApiCall2 = retrofit.create(IApiCall.class);
+                final Call<List<ProductDTO>> getAll = iApiCall2.getCartId(userId);
+                getAll.enqueue(new Callback<List<ProductDTO>>() {
+                    @Override
+                    public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
+                        productList.clear();
+                        productList.addAll(response.body());
+                        mAdapter.notifyDataSetChanged();
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
+
+                    }
+                });
 
             }
 
             @Override
-            public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
-                Toast.makeText(Cart_Activity.this, "failed to display the list", Toast.LENGTH_LONG).show();
+            public void onFailure(Call<Void> call, Throwable t) {
 
             }
         });
+
+
+
+
 
 
     }
 
     @Override
     public void onClickRemove(String productId) {
-      final  String userId1 = userId;
+        final  String userId1 = userId;
 
         IApiCall iApiCall = retrofit.create(IApiCall.class);
         final Call<Boolean> removeProduct = iApiCall.removeProductCartId(userId1,productId);
@@ -154,14 +140,14 @@ public class Cart_Activity extends AppCompatActivity implements CartInterface{
                             productList.clear();
                             productList.addAll(response.body());
                             mAdapter.notifyDataSetChanged();
-                            Toast.makeText(Cart_Activity.this, "passed to refresh the cart products", Toast.LENGTH_LONG).show();
+                            Toast.makeText(AddCartActivity.this, "passed to refresh the cart products", Toast.LENGTH_LONG).show();
 
 
                         }
 
                         @Override
                         public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
-                            Toast.makeText(Cart_Activity.this, "failed to refresh the cart products", Toast.LENGTH_LONG).show();
+                            Toast.makeText(AddCartActivity.this, "failed to refresh the cart products", Toast.LENGTH_LONG).show();
 
 
                         }
@@ -175,11 +161,9 @@ public class Cart_Activity extends AppCompatActivity implements CartInterface{
 
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(Cart_Activity.this, "failed to remove the product", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddCartActivity.this, "failed to remove the product", Toast.LENGTH_SHORT).show();
 
             }
         });
-
-//
     }
 }

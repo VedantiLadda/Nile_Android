@@ -10,7 +10,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.vedantiladda.ecommerce.model.ProductDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +33,7 @@ public class BuyActivity extends AppCompatActivity implements BuyInterface {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private List<Product> productList = new ArrayList<>();
+    private List<ProductDTO> productList = new ArrayList<>();
     OkHttpClient client = new OkHttpClient.Builder().build();
 
     final Retrofit retrofit = new Retrofit.Builder()
@@ -83,6 +86,13 @@ public class BuyActivity extends AppCompatActivity implements BuyInterface {
 //        productList.add(product4);
 //        mAdapter.notifyDataSetChanged();
 //till here
+        TextView txtTotalPrice;
+        TextView txtPrice;
+        txtTotalPrice = (TextView) findViewById(R.id.totalPrice);
+        txtPrice = (TextView) findViewById(R.id.price);
+        txtPrice.setText(""+BuyAdaptor.priceSum);
+        txtTotalPrice.setText("Total Price");
+
         Button contShopping = (Button) findViewById(R.id.continueshop);
         contShopping.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,11 +104,11 @@ public class BuyActivity extends AppCompatActivity implements BuyInterface {
         });
 
         IApiCall iApiCall = retrofit.create(IApiCall.class);
-        final Call<List<Product>> getCartId = iApiCall.getCartId(userId);
+        final Call<List<ProductDTO>> getCartId = iApiCall.getCartId(userId);
         // this is the call to fet the cart product list
-        getCartId.enqueue(new Callback<List<Product>>() {
+        getCartId.enqueue(new Callback<List<ProductDTO>>() {
             @Override
-            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+            public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
                 productList.clear();
                 productList.addAll(response.body());
                 mAdapter.notifyDataSetChanged();
@@ -107,7 +117,7 @@ public class BuyActivity extends AppCompatActivity implements BuyInterface {
             }
 
             @Override
-            public void onFailure(Call<List<Product>> call, Throwable t) {
+            public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
                 Toast.makeText(BuyActivity.this, "failed to display the list", Toast.LENGTH_LONG).show();
 
             }

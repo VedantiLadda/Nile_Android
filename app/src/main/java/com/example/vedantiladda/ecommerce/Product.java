@@ -11,6 +11,15 @@ public class Product {
     String quantity;
     String productprice;
     String brand;
+   /* String cartId;
+
+    public String getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(String cartId) {
+        this.cartId = cartId;
+    }*/
 
     public String getBrand() {
         return brand;
