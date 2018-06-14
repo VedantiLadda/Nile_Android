@@ -9,7 +9,7 @@ import retrofit2.Call;
 import retrofit2.http.Path;
 
 public interface IApiCall {
-    @GET("/product/getAllCategories/getAll")
+    @GET("/category/getAll")
     Call<List<Category>> getAllCategories();
 
     @GET("/product/getProductDetailsById/{productId}")

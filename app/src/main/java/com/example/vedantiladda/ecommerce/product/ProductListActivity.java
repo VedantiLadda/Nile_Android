@@ -1,6 +1,7 @@
 package com.example.vedantiladda.ecommerce.product;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,10 +30,11 @@ public class ProductListActivity extends AppCompatActivity implements ProductLis
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private static String url = "http://10.177.2.201:8080";
     private List<ProductDTO> productList = new ArrayList<>();
     OkHttpClient client = new OkHttpClient.Builder().build();
     final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://10.177.1.76:8080/employee/")
+            .baseUrl(url)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build();
@@ -43,7 +45,7 @@ public class ProductListActivity extends AppCompatActivity implements ProductLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
-        category = getIntent().getExtras().getString("categoryId");
+        category = getIntent().getExtras().getString("categoryName");
         mRecyclerView = (RecyclerView) findViewById(R.id.ProductListRecycler);
 
 
@@ -55,11 +57,13 @@ public class ProductListActivity extends AppCompatActivity implements ProductLis
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        GetProductList(category);
 
         // specify an adapter (see also next example)
         mAdapter = new ProductListAdaptor(productList, ProductListActivity.this);
         mRecyclerView.setAdapter(mAdapter);
-        GetProductList(category);
+        mAdapter.notifyDataSetChanged();
+
 
 
 
@@ -67,81 +71,85 @@ public class ProductListActivity extends AppCompatActivity implements ProductLis
 
     @Override
     public void onClickTextView(String id) {
-
+        Intent i = new Intent(ProductListActivity.this, ProductDetailsActivity.class);
+        i.putExtra("productId", id);
+        startActivity(i);
     }
 
-    public void GetProductList(String categoryId){
-
-        ProductDTO product1 = new ProductDTO();
-        ProductDTO product2 = new ProductDTO();
-        ProductDTO product3 = new ProductDTO();
-        ProductDTO product4 = new ProductDTO();
-        ProductDTO product5 = new ProductDTO();
-
-        product1.setPrice("100");
-        product1.setProductId("1");
-        product1.setProductName("Phone1");
-        product1.setProductDescription("Samsung Phone");
-        product1.setImageURL("https://www.static-src.com/wcsstore/Indraprastha/images/catalog/medium/MTA-2165006/samsung_samsung-galaxy-j7-duo-smartphone---gold--32gb--3gb--o-_full09.jpg");
-        product1.setCategoryId("1");
-
-        product2.setPrice("100");
-        product2.setProductId("1");
-        product2.setProductName("Phone1");
-        product2.setProductDescription("Samsung Phone");
-        product2.setImageURL("https://www.static-src.com/wcsstore/Indraprastha/images/catalog/medium/MTA-2165006/samsung_samsung-galaxy-j7-duo-smartphone---gold--32gb--3gb--o-_full09.jpg");
-        product2.setCategoryId("1");
-
-        product3.setPrice("100");
-        product3.setProductId("1");
-        product3.setProductName("Phone1");
-        product3.setProductDescription("Samsung Phone");
-        product3.setImageURL("https://www.static-src.com/wcsstore/Indraprastha/images/catalog/medium/MTA-2165006/samsung_samsung-galaxy-j7-duo-smartphone---gold--32gb--3gb--o-_full09.jpg");
-        product3.setCategoryId("1");
-
-        product4.setPrice("100");
-        product4.setProductId("1");
-        product4.setProductName("Phone1");
-        product4.setProductDescription("Samsung Phone");
-        product4.setImageURL("https://www.static-src.com/wcsstore/Indraprastha/images/catalog/medium/MTA-2165006/samsung_samsung-galaxy-j7-duo-smartphone---gold--32gb--3gb--o-_full09.jpg");
-        product4.setCategoryId("1");
-
-        product5.setPrice("100");
-        product5.setProductId("1");
-        product5.setProductName("Phone1");
-        product5.setProductDescription("Samsung Phone");
-        product5.setImageURL("https://www.static-src.com/wcsstore/Indraprastha/images/catalog/medium/MTA-2165006/samsung_samsung-galaxy-j7-duo-smartphone---gold--32gb--3gb--o-_full09.jpg");
-        product5.setCategoryId("1");
-        productList.clear();
-
-        productList.add(product1);
-        productList.add(product2);
-        productList.add(product3);
-        productList.add(product4);
-        productList.add(product5);
-        mAdapter.notifyDataSetChanged();
-
-
-
-
-//        IApiCall iApiCall = retrofit.create(IApiCall.class);
-//        final Call<List<ProductDTO>> getAllCall = iApiCall.getAllProducts(categoryId);
-//        getAllCall.enqueue(new Callback<List<ProductDTO>>() {
-//            @Override
-//            public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
-//                productList.clear();
-//                productList.addAll(response.body());
-//                mAdapter.notifyDataSetChanged();
-//                Toast.makeText(ProductListActivity.this, "received", Toast.LENGTH_LONG).show();
-//            }
+    public void GetProductList(String categoryname){
+//        productList.clear();
+//        ProductDTO product1 = new ProductDTO();
+//        ProductDTO product2 = new ProductDTO();
+//        ProductDTO product3 = new ProductDTO();
+//        ProductDTO product4 = new ProductDTO();
+//        ProductDTO product5 = new ProductDTO();
 //
-//            @Override
-//            public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
-//                Toast.makeText(ProductListActivity.this, "failed", Toast.LENGTH_LONG).show();
+//        List<String> url = new ArrayList<>();
+//        url.add("https://www.static-src.com/wcsstore/Indraprastha/images/catalog/med" +
+//                "ium/MTA-2165006/samsung_samsung-galaxy-j7-duo-smartphone---gold--32gb--3gb--o-_full09.jpg");
+//        product1.setPrice(100);
+//        product1.setProductId("1");
+//        product1.setProductName("Phone1");
+//        product1.setDescription("Samsung Phone");
+//        product1.setImages(url);
+//        product1.setCategory("1");
 //
-//            }
+//        product2.setPrice(100);
+//        product2.setProductId("1");
+//        product2.setProductName("Phone1");
+//        product2.setDescription("Samsung Phone");
+//        product2.setImages(url);
+//        product2.setCategory("1");
 //
-//        });
+//        product3.setPrice(100);
+//        product3.setProductId("1");
+//        product3.setProductName("Phone1");
+//        product3.setDescription("Samsung Phone");
+//        product3.setImages(url);
+//        product3.setCategory("1");
+//
+//        product4.setPrice(100);
+//        product4.setProductId("1");
+//        product4.setProductName("Phone1");
+//        product4.setDescription("Samsung Phone");
+//        product4.setImages(url);
+//        product4.setCategory("1");
+//
+//        product5.setPrice(100);
+//        product5.setProductId("1");
+//        product5.setProductName("Phone1");
+//        product5.setDescription("Samsung Phone");
+//        product5.setImages(url);
+//        product5.setCategory("1");
+//
+//        productList.add(product1);
+//        productList.add(product2);
+//        productList.add(product3);
+//        productList.add(product4);
+//        productList.add(product5);
+        //mAdapter.notifyDataSetChanged();
+
+
+
+
+        IApiCall iApiCall = retrofit.create(IApiCall.class);
+        final Call<List<ProductDTO>> getAllCall = iApiCall.getAllProducts(categoryname);
+        getAllCall.enqueue(new Callback<List<ProductDTO>>() {
+            @Override
+            public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
+                productList.clear();
+                productList.addAll(response.body());
+                mAdapter.notifyDataSetChanged();
+                Toast.makeText(ProductListActivity.this, "received", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
+                Toast.makeText(ProductListActivity.this, "failed", Toast.LENGTH_LONG).show();
+
+            }
+
+        });
 
     }
 }

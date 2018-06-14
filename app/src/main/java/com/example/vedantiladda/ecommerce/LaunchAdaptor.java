@@ -39,8 +39,8 @@ public class LaunchAdaptor extends RecyclerView.Adapter<LaunchAdaptor.CategoryHo
             @Override
             public void onClick(View view) {
                 Category category = categories.get(categoryHolder.getAdapterPosition());
-                String id=category.getCategoryId();
-                communicator.onClickTextView(id);
+                String name=category.getCategoryName();
+                communicator.onClickTextView(name);
             }
         });
     }
@@ -59,6 +59,6 @@ public class LaunchAdaptor extends RecyclerView.Adapter<LaunchAdaptor.CategoryHo
         }
     }
     public interface LaunchCommunicator {
-        public void onClickTextView(String id);
+        public void onClickTextView(String name);
     }
 }

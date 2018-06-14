@@ -1,26 +1,19 @@
 package com.example.vedantiladda.ecommerce.model;
 
 import java.util.List;
+import java.util.Map;
 
 public class ProductDTO {
-    private String productName;
-    private String productDescription;
-    private String price;
-    private String imageURL;
     private String productId;
+    private String productName;
+    private String category;
+    private List<MerchantDTO> merchants;
     private String description;
-    private String rating;
-    private List<String> attributes;
-    private List<String> merchant;
-    private String categoryId;
-
-    public String getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
-    }
+    private List<Map> attribute;
+    private Integer stock;
+    private List<String> images;
+    private Integer price;
+    private String brand;
 
     public String getProductId() {
         return productId;
@@ -38,27 +31,67 @@ public class ProductDTO {
         this.productName = productName;
     }
 
-    public String getProductDescription() {
-        return productDescription;
+    public String getCategory() {
+        return category;
     }
 
-    public void setProductDescription(String productDescription) {
-        this.productDescription = productDescription;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public String getPrice() {
+    public List<MerchantDTO> getMerchants() {
+        return merchants;
+    }
+
+    public void setMerchants(List<MerchantDTO> merchants) {
+        this.merchants = merchants;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<Map> getAttribute() {
+        return attribute;
+    }
+
+    public void setAttribute(List<Map> attribute) {
+        this.attribute = attribute;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
+    }
+
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
-    public String getImageURL() {
-        return imageURL;
+    public String getBrand() {
+        return brand;
     }
 
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 }

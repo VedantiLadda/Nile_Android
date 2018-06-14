@@ -31,7 +31,7 @@ public class LaunchActivity extends AppCompatActivity implements LaunchAdaptor.L
     private List<Category> categoryList = new ArrayList<>();
     OkHttpClient client = new OkHttpClient.Builder().build();
     final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://10.177.1.76:8080/employee/")
+            .baseUrl("http://10.177.2.201:8080")
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build();
@@ -64,35 +64,35 @@ public class LaunchActivity extends AppCompatActivity implements LaunchAdaptor.L
         mRecyclerView.setAdapter(mAdapter);
 
         GetCategory();
-        Category category1 = new Category();
-        category1.setCategoryId("1");
-        category1.setCategoryName("Phones");
-        Category category2 = new Category();
-        category2.setCategoryId("2");
-        category2.setCategoryName("Laptops");
-        Category category3 = new Category();
-        category3.setCategoryId("3");
-        category3.setCategoryName("TVs");
-        Category category4 = new Category();
-        category4.setCategoryId("4");
-        category4.setCategoryName("Headphones");
-        Category category5 = new Category();
-        category5.setCategoryId("5");
-        category5.setCategoryName("Speakers");
-        categoryList.add(category1);
-        categoryList.add(category2);
-        categoryList.add(category3);
-        categoryList.add(category4);
-        categoryList.add(category5);
+//        Category category1 = new Category();
+//        category1.setCategoryId("1");
+//        category1.setCategoryName("Phones");
+//        Category category2 = new Category();
+//        category2.setCategoryId("2");
+//        category2.setCategoryName("Laptops");
+//        Category category3 = new Category();
+//        category3.setCategoryId("3");
+//        category3.setCategoryName("TVs");
+//        Category category4 = new Category();
+//        category4.setCategoryId("4");
+//        category4.setCategoryName("Headphones");
+//        Category category5 = new Category();
+//        category5.setCategoryId("5");
+//        category5.setCategoryName("Speakers");
+//        categoryList.add(category1);
+//        categoryList.add(category2);
+//        categoryList.add(category3);
+//        categoryList.add(category4);
+//        categoryList.add(category5);
 
 
 
     }
 
     @Override
-    public void onClickTextView(String id) {
+    public void onClickTextView(String name) {
         Intent i = new Intent(LaunchActivity.this, ProductListActivity.class);
-        i.putExtra("categoryId", id);
+        i.putExtra("categoryName", name);
         startActivity(i);
 
 
@@ -100,23 +100,23 @@ public class LaunchActivity extends AppCompatActivity implements LaunchAdaptor.L
 
     public void GetCategory(){
 
-//        IApiCall iApiCall = retrofit.create(IApiCall.class);
-//        final Call<List<Category>> getAllCall = iApiCall.getAllCategories();
-//        getAllCall.enqueue(new Callback<List<Category>>() {
-//            @Override
-//            public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
-//                categoryList.clear();
-//                categoryList.addAll(response.body());
-//                mAdapter.notifyDataSetChanged();
-//                Toast.makeText(LaunchActivity.this, "received", Toast.LENGTH_LONG).show();
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<Category>> call, Throwable t) {
-//                Toast.makeText(LaunchActivity.this, "failed", Toast.LENGTH_LONG).show();
-//
-//            }
-//
-//        });
+        IApiCall iApiCall = retrofit.create(IApiCall.class);
+        final Call<List<Category>> getAllCall = iApiCall.getAllCategories();
+        getAllCall.enqueue(new Callback<List<Category>>() {
+            @Override
+            public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
+                categoryList.clear();
+                categoryList.addAll(response.body());
+                mAdapter.notifyDataSetChanged();
+                Toast.makeText(LaunchActivity.this, "received", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call<List<Category>> call, Throwable t) {
+                Toast.makeText(LaunchActivity.this, "failed", Toast.LENGTH_LONG).show();
+
+            }
+
+        });
     }
 }

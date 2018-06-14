@@ -33,9 +33,10 @@
 
     <EditText
         android:id="@+id/editText"
-        android:layout_width="300dp"
+        android:layout_width="270dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:contentDescription="Search"
@@ -43,6 +44,7 @@
         android:hint="Search"
         android:inputType="text|textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/guideline4"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include" />
 

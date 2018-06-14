@@ -3,6 +3,7 @@ package com.example.vedantiladda.ecommerce.product;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,14 +42,19 @@ public class ProductListAdaptor extends RecyclerView.Adapter<ProductListAdaptor.
     @Override
     public void onBindViewHolder(@NonNull final ProductListAdaptor.ProductListHolder productListHolder, int i) {
         final ProductDTO product = products.get(i);
-        Glide.with(productListHolder.image.getContext()).load(products.get(i).getImageURL())
+        Log.d("API",product.getImages().get(0));
+        List<String> images = product.getImages();
+        String url2 = images.get(0).toString();
+        String url = "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/med" +
+                "ium/MTA-2165006/samsung_samsung-galaxy-j7-duo-smartphone---gold--32gb--3gb--o-_full09.jpg";
+        Glide.with(productListHolder.image.getContext()).load(url2)
                 .thumbnail(0.5f)
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(productListHolder.image);
-        productListHolder.description.setText(product.getProductDescription());
+        productListHolder.description.setText(product.getDescription());
         productListHolder.name.setText(product.getProductName());
-        productListHolder.price.setText(product.getPrice());
+        productListHolder.price.setText(product.getPrice().toString());
         productListHolder.constraint.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
