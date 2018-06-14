@@ -24,7 +24,17 @@ public class UserEntity {
 	@SerializedName("email")
 	private String email;
 
-	public void setFirstName(String firstName){
+    private String userId;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setFirstName(String firstName){
 		this.firstName = firstName;
 	}
 

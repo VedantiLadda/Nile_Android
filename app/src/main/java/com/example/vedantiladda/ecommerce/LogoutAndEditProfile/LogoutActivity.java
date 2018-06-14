@@ -1,4 +1,4 @@
-package com.example.vedantiladda.ecommerce;
+package com.example.vedantiladda.ecommerce.LogoutAndEditProfile;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.vedantiladda.ecommerce.LaunchActivty;
+import com.example.vedantiladda.ecommerce.R;
 import com.example.vedantiladda.ecommerce.model.UserEntity;
 
 public class LogoutActivity extends AppCompatActivity {
@@ -24,7 +26,7 @@ public class LogoutActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(),EditProfileActivity.class);
                 startActivity(i);
-                finish();
+                //finish();
 
 
             }
@@ -57,7 +59,7 @@ public class LogoutActivity extends AppCompatActivity {
                 //Put the updated launcher activity here
                 Intent intent = new Intent(LogoutActivity.this,LaunchActivty.class);
                 startActivity(intent);
-                finish();
+                //finish();
 
             }
         });

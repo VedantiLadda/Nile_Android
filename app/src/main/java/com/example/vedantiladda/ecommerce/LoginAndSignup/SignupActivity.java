@@ -129,8 +129,12 @@ public class SignupActivity extends AppCompatActivity {
                 if (editText7.getText().toString().isEmpty()) {
                     editText7.setError("Required field!");
                     return;
+
                 }
-                userEntity.setPassword(editText7.getText().toString());
+                else if(editText7.getText().toString().length()<4){
+                    editText7.setError("Minimum 4 characters required!");
+                }
+                else{userEntity.setPassword(editText7.getText().toString());}
 
                 if (editText8.getText().toString().isEmpty()) {
                     editText8.setError("Required field!");

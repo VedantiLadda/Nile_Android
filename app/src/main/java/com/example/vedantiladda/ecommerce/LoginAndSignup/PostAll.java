@@ -17,4 +17,7 @@ public interface PostAll {
 
     @GET("user/emailExists/{email}")
     Call<Boolean> emailExists(@Path("email") String email);
+
+    @POST("user/editProfile")
+    Call<UserEntity> editProfile(@Body UserEntity userEntity);
 }

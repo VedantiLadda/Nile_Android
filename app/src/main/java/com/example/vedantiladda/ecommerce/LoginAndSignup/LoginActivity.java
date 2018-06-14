@@ -13,7 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vedantiladda.ecommerce.CredentialsActivity;
+import com.example.vedantiladda.ecommerce.LogoutAndEditProfile.EditProfileActivity;
+import com.example.vedantiladda.ecommerce.LogoutAndEditProfile.LogoutActivity;
 import com.example.vedantiladda.ecommerce.R;
+import com.example.vedantiladda.ecommerce.model.AddressEntity;
 import com.example.vedantiladda.ecommerce.model.UserEntity;
 
 import okhttp3.OkHttpClient;
@@ -81,7 +84,8 @@ public class LoginActivity extends AppCompatActivity {
                     editText9.setError("Required field!");
                     return;
                 }
-                UserEntity userEntity = new UserEntity();
+                final UserEntity userEntity = new UserEntity();
+                final AddressEntity addressEntity = userEntity.getAddressEntity();
 
                 userEntity.setEmail(editText.getText().toString());
                 userEntity.setPassword(editText9.getText().toString());
@@ -97,7 +101,30 @@ public class LoginActivity extends AppCompatActivity {
 
                         }
                         else {
+                            UserEntity userEntity1=response.body();
+
+                            SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("email", userEntity1.getEmail());
+                            editor.putString("password", userEntity1.getPassword());
+                            editor.putString("id", userEntity1.getUserId());
+                            editor.putString("firstName", userEntity1.getFirstName());
+                            editor.putString("lastName", userEntity1.getLastName());
+                            editor.putString("mobile", userEntity1.getMobile());
+                            editor.putString("line1", userEntity1.getAddressEntity().getLine1());
+                            editor.putString("line2", userEntity1.getAddressEntity().getLine2());
+                            editor.putString("zip", userEntity1.getAddressEntity().getZip());
+                            editor.putString("city", userEntity1.getAddressEntity().getCity());
+                            editor.putString("landmark", userEntity1.getAddressEntity().getLandmark());
+                            editor.putString("state", userEntity1.getAddressEntity().getState());
+
+                            editor.apply();
+
+
+
                             Toast.makeText(getApplicationContext(), "successfully logged in!", Toast.LENGTH_SHORT).show();
+                            Intent intent2 = new Intent(LoginActivity.this, LogoutActivity.class);
+                            startActivity(intent2);
                         }
 
                     }
@@ -111,15 +138,17 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
 
-                SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+               /* SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("Email", editTextValue);
-                editor.putString("Password", editTextValue9);
+                editor.putString("email", editTextValue);
+                editor.putString("password", editTextValue9);
 
-                Intent intent = new Intent(LoginActivity.this,CredentialsActivity.class);
+                editor.apply();*/
+
+                //Intent intent = new Intent(LoginActivity.this,CredentialsActivity.class);
                 //intent.putExtra("Email",editTextValue);
                 //intent.putExtra("Password",editTextValue9);
-                startActivity(intent);
+                //startActivity(intent);
             }
         });
     }

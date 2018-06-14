@@ -1,10 +1,11 @@
-package com.example.vedantiladda.ecommerce;
+package com.example.vedantiladda.ecommerce.LogoutAndEditProfile;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+//import android.util.Log;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.vedantiladda.ecommerce.LoginAndSignup.PostAll;
+import com.example.vedantiladda.ecommerce.R;
 import com.example.vedantiladda.ecommerce.model.AddressEntity;
 import com.example.vedantiladda.ecommerce.model.UserEntity;
 
@@ -27,12 +29,12 @@ public class EditProfileActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private String url = "https://lit-anchorage-36944.herokuapp.com/";
 
-    public boolean isValidEmailAddress3(String email) {
+    /*public boolean isValidEmailAddress3(String email) {
         String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
         java.util.regex.Matcher m = p.matcher(email);
         return m.matches();
-    }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         final EditText editText4 = findViewById(R.id.editText4);
         final EditText editText5 = findViewById(R.id.editText5);
-        final EditText editText6 = findViewById(R.id.editText6);
+        //final EditText editText6 = findViewById(R.id.editText6);
         final EditText editText7 = findViewById(R.id.editText7);
         final EditText editText8 = findViewById(R.id.editText8);
         final EditText editText12 = findViewById(R.id.editText12);
@@ -53,7 +55,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
         final String editTextValue4 = editText4.getText().toString();
         final String editTextValue5 = editText5.getText().toString();
-        final String editTextValue6 = editText6.getText().toString();
+        Log.d("aaaaaaa",editTextValue4);
+        //final String editTextValue6 = editText6.getText().toString();
         final String editTextValue7 = editText7.getText().toString();
         final String editTextValue8 = editText8.getText().toString();
         final String editTextValue12 = editText12.getText().toString();
@@ -62,18 +65,20 @@ public class EditProfileActivity extends AppCompatActivity {
         final String editTextValue15 = editText15.getText().toString();
         final String editTextValue16 = editText16.getText().toString();
         final String editTextValue17 = editText17.getText().toString();
-        SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+
+    final     SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+        Log.d("API",sharedPreferences.getString("firstName","firstName"));
         editText4.setText(sharedPreferences.getString("firstName",editTextValue4));
-        editText4.setText(sharedPreferences.getString("lastName",editTextValue5));
-        editText4.setText(sharedPreferences.getString("email",editTextValue6));
-        editText4.setText(sharedPreferences.getString("password",editTextValue7));
-        editText4.setText(sharedPreferences.getString("mobile",editTextValue8));
-        editText4.setText(sharedPreferences.getString("line1",editTextValue12));
-        editText4.setText(sharedPreferences.getString("line2",editTextValue13));
-        editText4.setText(sharedPreferences.getString("zip",editTextValue14));
-        editText4.setText(sharedPreferences.getString("city",editTextValue15));
-        editText4.setText(sharedPreferences.getString("landmark",editTextValue16));
-        editText4.setText(sharedPreferences.getString("state",editTextValue17));
+        editText5.setText(sharedPreferences.getString("lastName",editTextValue5));
+        //editText6.setText(sharedPreferences.getString("email",editTextValue6));
+        editText7.setText(sharedPreferences.getString("password",editTextValue7));
+        editText8.setText(sharedPreferences.getString("mobile",editTextValue8));
+        editText12.setText(sharedPreferences.getString("line1",editTextValue12));
+        editText13.setText(sharedPreferences.getString("line2",editTextValue13));
+        editText14.setText(sharedPreferences.getString("zip",editTextValue14));
+        editText15.setText(sharedPreferences.getString("city",editTextValue15));
+        editText16.setText(sharedPreferences.getString("landmark",editTextValue16));
+        editText17.setText(sharedPreferences.getString("state",editTextValue17));
 
         OkHttpClient client = new OkHttpClient.Builder().build();
 
@@ -83,7 +88,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 .client(client)
                 .build();
 
-        Button edit_profile_button = findViewById(R.id.edit_profile_button);
+        Button edit_profile_button = findViewById(R.id.save_button);
         edit_profile_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,7 +101,8 @@ public class EditProfileActivity extends AppCompatActivity {
                 userEntity.setLastName(editText5.getText().toString());
                 userEntity.setPassword(editText7.getText().toString());
                 userEntity.setMobile(editText8.getText().toString());
-                userEntity.setEmail(editText6.getText().toString());
+
+                //userEntity.setEmail(sharedPreferences.getString("email",editTextValue6));
                 addressEntity.setLine1(editText12.getText().toString());
                 addressEntity.setLine2(editText13.getText().toString());
                 addressEntity.setZip(editText14.getText().toString());
@@ -117,12 +123,12 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
                 userEntity.setLastName(editText5.getText().toString());
 
-                if (!isValidEmailAddress3(editText6.getText().toString().trim())) {
+                /*if (!isValidEmailAddress3(editText6.getText().toString().trim())) {
                     editText6.setError("Enter a valid email id!");
                     return;
                 }
 
-                userEntity.setEmail(editText6.getText().toString());
+                userEntity.setEmail(editText6.getText().toString());*/
 
                 if (editText7.getText().toString().isEmpty()) {
                     editText7.setError("Required field!");
@@ -172,16 +178,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
                 addressEntity.setState(editText17.getText().toString());
 
-                PostAll emailValidity1 = retrofit.create(PostAll.class);
-                Call<Boolean> emailValidityCall1 = emailValidity1.emailExists(userEntity.getEmail());
-                emailValidityCall1.enqueue(new Callback<Boolean>() {
-                    @Override
-                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                        if (response.body()) {
-                            Log.d("API", "succ");
-                            Toast.makeText(getApplicationContext(), "email id already exists!", Toast.LENGTH_SHORT).show();
-                            return;
-                        } else {
+
                             PostAll editprofile = retrofit.create(PostAll.class);
                             Call<UserEntity> editprofileCall = editprofile.editProfile(userEntity);
 
@@ -190,12 +187,13 @@ public class EditProfileActivity extends AppCompatActivity {
                                 public void onResponse(Call<UserEntity> call, Response<UserEntity> response) {
                                     if(response.body() == null){
                                         Toast.makeText(getApplicationContext(),"please enter details!",Toast.LENGTH_SHORT).show();
-
+                                        finish();
                                     }
                                     else {
                                         Toast.makeText(getApplicationContext(),"Successfully edited!",Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(EditProfileActivity.this,LogoutActivity.class);
                                         startActivity(intent);
+                                        finish();
                                     }
                                 }
 
@@ -204,14 +202,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "failed to edit!", Toast.LENGTH_SHORT).show();
                                 }
                             });
-                        }
-                    }
 
-                    @Override
-                    public void onFailure(Call<Boolean> call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), "edit error!", Toast.LENGTH_SHORT).show();
-                    }
-                });
 
 
 
