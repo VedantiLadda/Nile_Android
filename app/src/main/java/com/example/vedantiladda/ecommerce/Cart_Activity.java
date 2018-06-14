@@ -26,20 +26,27 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Cart_Activity extends AppCompatActivity implements CartInterface{
     private RecyclerView mRecyclerView;
+    static String url1="http://10.177.2.196:8080";
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<ProductDTO> productList = new ArrayList<>();
     OkHttpClient client = new OkHttpClient.Builder().build();
 
     final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://10.177.1.76:8080/employee/") // need to change the url
+            .baseUrl("http://10.177.2.196:8080") // need to change the url
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build();
-    // we will get the user id.. check if there is user id in shared preferences... assign it to the string initialized
-    SharedPreferences sharedPreferences = getSharedPreferences("training", Context.MODE_PRIVATE);
-    String userId = sharedPreferences.getString("userId",null);
+    final Retrofit retrofit2 = new Retrofit.Builder()
+            .baseUrl("http://10.177.2.201:8080") // need to change the url
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build();
 
+    // we will get the user id.. check if there is user id in shared preferences... assign it to the string initialized
+//    SharedPreferences sharedPreferences = getSharedPreferences("training", Context.MODE_PRIVATE);
+//    String userId = sharedPreferences.getString("userId",null);
+String userId ="049bb238-11bc-4269-bd7e-b35133b765f3";
 
 
     @Override
@@ -72,9 +79,9 @@ public class Cart_Activity extends AppCompatActivity implements CartInterface{
             }
         });
 
-
+        url1="http://10.177.2.196:8080";
         IApiCall iApiCall = retrofit.create(IApiCall.class);
-        final Call<List<ProductDTO>> getCartId = iApiCall.getCartId(userId);
+        final Call<List<String>> getCartId = iApiCall.getCartId(userId);
 
 //        Product product1=new Product();
 //        product1.setBrand("Samsung1");
@@ -109,19 +116,36 @@ public class Cart_Activity extends AppCompatActivity implements CartInterface{
         //product.setImageUrl(https://www.google.com/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwipi_yjqdDbAhVGs48KHdUuCl8QjRx6BAgBEAU&url=https%3A%2F%2Fgadgets.ndtv.com%2Fsamsung-galaxy-j6-5454&psig=AOvVaw1NUnggLIf4Bvnn2RI6ivfs&ust=1528968398070531);
 
         // this is the call to fet the cart product list
-        getCartId.enqueue(new Callback<List<ProductDTO>>() {
+        getCartId.enqueue(new Callback<List<String>>() {
             @Override
-            public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
-                productList.clear();
-                productList.addAll(response.body());
-                mAdapter.notifyDataSetChanged();
-                Toast.makeText(Cart_Activity.this, "passed", Toast.LENGTH_LONG).show();
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                url1 = "http://10.177.2.201:8080";
+                IApiCall iApiCall2 = retrofit2.create(IApiCall.class);
+                Log.i("application", "onResponse: "+response.body());
+                final Call<List<ProductDTO>> getCartProducts = iApiCall2.getCartProducts(response.body());
+                getCartProducts.enqueue(new Callback<List<ProductDTO>>() {
+                    @Override
+                    public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
+
+                        Log.i("application", "onResponse: "+response.body());
+                        if(response.body() != null){
+                            productList.clear();
+                            productList.addAll(response.body());
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
+                        Log.i("application", "onFailure: ");
+
+                    }
+                });
 
             }
 
             @Override
-            public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
-                Toast.makeText(Cart_Activity.this, "failed to display the list", Toast.LENGTH_LONG).show();
+            public void onFailure(Call<List<String>> call, Throwable t) {
 
             }
         });
@@ -132,6 +156,7 @@ public class Cart_Activity extends AppCompatActivity implements CartInterface{
     @Override
     public void onClickRemove(String productId) {
       final  String userId1 = userId;
+     //   url1="http://10.177.2.196:8080";
 
         IApiCall iApiCall = retrofit.create(IApiCall.class);
         final Call<Boolean> removeProduct = iApiCall.removeProductCartId(userId1,productId);
@@ -141,36 +166,38 @@ public class Cart_Activity extends AppCompatActivity implements CartInterface{
 
                 //if the response is true . this says the product is deleted.
                 //check if the condition checking is right
-                if (response.body()){
                     //the response body is true..
                     //refresh the cart view again
                     IApiCall iApiCall1 = retrofit.create(IApiCall.class);
-                    final Call<List<ProductDTO>> getCartId = iApiCall1.getCartId(userId1);
+                    final Call<List<String>> getCartId = iApiCall1.getCartId(userId1);
                     // this is the call to fet the cart product list
-                    getCartId.enqueue(new Callback<List<ProductDTO>>() {
+                    getCartId.enqueue(new Callback<List<String>>() {
                         @Override
-                        public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
+                        public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                           // url1 = "http://10.177.2.201:8080";
+                            IApiCall iApiCall = retrofit2.create(IApiCall.class);
+                            final Call<List<ProductDTO>> getCartProducts = iApiCall.getCartProducts(response.body());
+                            getCartProducts.enqueue(new Callback<List<ProductDTO>>() {
+                                @Override
+                                public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
+                                    productList.clear();
+                                    productList.addAll(response.body());
+                                    mAdapter.notifyDataSetChanged();
+                                }
 
-                            productList.clear();
-                            productList.addAll(response.body());
-                            mAdapter.notifyDataSetChanged();
-                            Toast.makeText(Cart_Activity.this, "passed to refresh the cart products", Toast.LENGTH_LONG).show();
+                                @Override
+                                public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
 
+                                }
+                            });
 
                         }
 
                         @Override
-                        public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
-                            Toast.makeText(Cart_Activity.this, "failed to refresh the cart products", Toast.LENGTH_LONG).show();
-
+                        public void onFailure(Call<List<String>> call, Throwable t) {
 
                         }
                     });
-
-
-
-                }
-
             }
 
             @Override

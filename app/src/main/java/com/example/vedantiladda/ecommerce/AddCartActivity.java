@@ -26,6 +26,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AddCartActivity extends AppCompatActivity implements CartInterface{
 
+    static String url = "http://10.177.2.196:8080";
+
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -33,13 +35,21 @@ public class AddCartActivity extends AppCompatActivity implements CartInterface{
     OkHttpClient client = new OkHttpClient.Builder().build();
 
     final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://10.177.1.76:8080/employee/") // need to change the url
+            .baseUrl("http://10.177.2.196:8080") // need to change the url
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build();
+
+    final Retrofit retrofit2 = new Retrofit.Builder()
+            .baseUrl("http://10.177.2.201:8080") // need to change the url
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build();
+
     // we will get the user id.. check if there is user id in shared preferences... assign it to the string initialized
-    SharedPreferences sharedPreferences = getSharedPreferences("training", Context.MODE_PRIVATE);
-    String userId = sharedPreferences.getString("userId",null);
+//    SharedPreferences sharedPreferences = getSharedPreferences("training", Context.MODE_PRIVATE);
+//    String userId = sharedPreferences.getString("userId",null);
+    String userId ="049bb238-11bc-4269-bd7e-b35133b765f3";
 
 
     @Override
@@ -84,21 +94,52 @@ public class AddCartActivity extends AppCompatActivity implements CartInterface{
                 Log.i("application", "trying to refresh the view ");
 
                 IApiCall iApiCall2 = retrofit.create(IApiCall.class);
-                final Call<List<ProductDTO>> getAll = iApiCall2.getCartId(userId);
-                getAll.enqueue(new Callback<List<ProductDTO>>() {
+                final Call<List<String>> getAll = iApiCall2.getCartId(userId);
+                getAll.enqueue(new Callback<List<String>>() {
                     @Override
-                    public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
-                        productList.clear();
-                        productList.addAll(response.body());
-                        mAdapter.notifyDataSetChanged();
+                    public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                        url = "http://10.177.2.201:8080";
+                        IApiCall iApiCall = retrofit2.create(IApiCall.class);
+                        final Call<List<ProductDTO>> getCartProducts = iApiCall.getCartProducts(response.body());
+                        getCartProducts.enqueue(new Callback<List<ProductDTO>>() {
+                            @Override
+                            public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
+                                productList.clear();
+                                productList.addAll(response.body());
+                                mAdapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
+
+                            }
+                        });
+
 
                     }
 
                     @Override
-                    public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
+                    public void onFailure(Call<List<String>> call, Throwable t) {
 
                     }
                 });
+//                getAll.enqueue(new Callback<List<ProductDTO>>() {
+//                    @Override
+//                    public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
+////                        productList.clear();
+////                        productList.addAll(response.body());
+////                        mAdapter.notifyDataSetChanged();
+//                        IApiCall iApiCall = retrofit.create(IApiCall.class);
+//
+//
+//
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
+//
+//                    }
+//                });
 
             }
 
@@ -131,24 +172,34 @@ public class AddCartActivity extends AppCompatActivity implements CartInterface{
                     //the response body is true..
                     //refresh the cart view again
                     IApiCall iApiCall1 = retrofit.create(IApiCall.class);
-                    final Call<List<ProductDTO>> getCartId = iApiCall1.getCartId(userId1);
+                    final Call<List<String>> getCartId = iApiCall1.getCartId(userId1);
                     // this is the call to fet the cart product list
-                    getCartId.enqueue(new Callback<List<ProductDTO>>() {
+                    getCartId.enqueue(new Callback<List<String>>() {
                         @Override
-                        public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
+                        public void onResponse(Call<List<String>> call, Response<List<String>> response) {
 
-                            productList.clear();
-                            productList.addAll(response.body());
-                            mAdapter.notifyDataSetChanged();
-                            Toast.makeText(AddCartActivity.this, "passed to refresh the cart products", Toast.LENGTH_LONG).show();
+                            url = "http://10.177.2.201:8080";
+                            IApiCall iApiCall = retrofit2.create(IApiCall.class);
+                            final Call<List<ProductDTO>> getCartProducts = iApiCall.getCartProducts(response.body());
+                            getCartProducts.enqueue(new Callback<List<ProductDTO>>() {
+                                @Override
+                                public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
+                                    productList.clear();
+                                    productList.addAll(response.body());
+                                    mAdapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
+
+                                }
+                            });
 
 
                         }
 
                         @Override
-                        public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
-                            Toast.makeText(AddCartActivity.this, "failed to refresh the cart products", Toast.LENGTH_LONG).show();
-
+                        public void onFailure(Call<List<String>> call, Throwable t) {
 
                         }
                     });

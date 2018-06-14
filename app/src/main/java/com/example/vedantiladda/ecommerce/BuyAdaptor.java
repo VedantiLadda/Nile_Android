@@ -42,8 +42,8 @@ public class BuyAdaptor extends RecyclerView.Adapter<BuyAdaptor.BuyHolder> {
 
         //buyHolder.txtsno.setText(i);//i is anyway continous numbers...
         buyHolder.txtproname.setText(products.get(i).getProductName());
-        buyHolder.txtproprice.setText(products.get(i).getPrice());
-        buyHolder.txtsno.setText(""+i);
+        buyHolder.txtproprice.setText(products.get(i).getPrice().toString());
+        buyHolder.txtsno.setText(i+"");
         double price =  products.get(i).getPrice();
         priceSum = priceSum + price;
         //set the values.. from

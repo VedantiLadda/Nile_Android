@@ -92,11 +92,11 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview2"
         android:layout_width="379dp"
-        android:layout_height="326dp"
+        android:layout_height="268dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="157dp" />
+        tools:layout_editor_absoluteY="215dp" />
 
     <TextView
         android:id="@+id/totalPrice"

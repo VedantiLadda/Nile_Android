@@ -46,7 +46,7 @@ public class CartAdaptor extends RecyclerView.Adapter<CartAdaptor.CartHolder>  {
        // productHolder.txtBrand.setText(products.get(i).getProductId); //.get will be from the Product class.
         cartHolder.txtBrand.setText(products.get(i).getBrand());
         cartHolder.txtProductName.setText(products.get(i).getProductName());
-        cartHolder.txtPrice.setText(products.get(i).getPrice());
+        cartHolder.txtPrice.setText(products.get(i).getPrice().toString());
 
         Glide.with(cartHolder.imageView.getContext()).load(products.get(i).getImages().get(0))
                 .thumbnail(0.5f)

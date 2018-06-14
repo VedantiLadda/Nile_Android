@@ -26,9 +26,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class BuyActivity extends AppCompatActivity implements BuyInterface {
-    SharedPreferences sharedPreferences = getSharedPreferences("training", Context.MODE_PRIVATE);
-    String userId = sharedPreferences.getString("userId",null);
+//    SharedPreferences sharedPreferences = getSharedPreferences("training", Context.MODE_PRIVATE);
+//    String userId = sharedPreferences.getString("userId",null);
+    static String url2="http://10.177.2.196:8080";
 
+    String userId ="049bb238-11bc-4269-bd7e-b35133b765f3";
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -37,10 +39,17 @@ public class BuyActivity extends AppCompatActivity implements BuyInterface {
     OkHttpClient client = new OkHttpClient.Builder().build();
 
     final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://10.177.1.76:8080/employee/") // need to change the url
+            .baseUrl("http://10.177.2.196:8080") // need to change the url
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build();
+
+    final Retrofit retrofit2 = new Retrofit.Builder()
+            .baseUrl("http://10.177.2.201:8080") // need to change the url
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build();
+
 
 
 
@@ -86,12 +95,6 @@ public class BuyActivity extends AppCompatActivity implements BuyInterface {
 //        productList.add(product4);
 //        mAdapter.notifyDataSetChanged();
 //till here
-        TextView txtTotalPrice;
-        TextView txtPrice;
-        txtTotalPrice = (TextView) findViewById(R.id.totalPrice);
-        txtPrice = (TextView) findViewById(R.id.price);
-        txtPrice.setText(""+BuyAdaptor.priceSum);
-        txtTotalPrice.setText("Total Price");
 
         Button contShopping = (Button) findViewById(R.id.continueshop);
         contShopping.setOnClickListener(new View.OnClickListener() {
@@ -102,23 +105,42 @@ public class BuyActivity extends AppCompatActivity implements BuyInterface {
                 startActivity(intent);
             }
         });
-
+        url2="http://10.177.2.196:8080";
         IApiCall iApiCall = retrofit.create(IApiCall.class);
-        final Call<List<ProductDTO>> getCartId = iApiCall.getCartId(userId);
+        final Call<List<String>> getCartId = iApiCall.getCartId(userId);
         // this is the call to fet the cart product list
-        getCartId.enqueue(new Callback<List<ProductDTO>>() {
+        getCartId.enqueue(new Callback<List<String>>() {
             @Override
-            public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
-                productList.clear();
-                productList.addAll(response.body());
-                mAdapter.notifyDataSetChanged();
-                Toast.makeText(BuyActivity.this, "passed", Toast.LENGTH_LONG).show();
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                url2 = "http://10.177.2.201:8080";
+                IApiCall iApiCall = retrofit2.create(IApiCall.class);
+                final Call<List<ProductDTO>> getCartProducts = iApiCall.getCartProducts(response.body());
+                getCartProducts.enqueue(new Callback<List<ProductDTO>>() {
+                    @Override
+                    public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
+                        productList.clear();
+                        productList.addAll(response.body());
+                        mAdapter.notifyDataSetChanged();
+                   //     TextView txtTotalPrice;
+                     //   TextView txtPrice;
+                       // txtTotalPrice = (TextView) findViewById(R.id.totalPrice);
+                       // txtPrice = (TextView) findViewById(R.id.price);
+
+                     //   txtPrice.setText(""+BuyAdaptor.priceSum);
+                       // txtTotalPrice.setText("Total Price");
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
+
+                    }
+                });
 
             }
 
             @Override
-            public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
-                Toast.makeText(BuyActivity.this, "failed to display the list", Toast.LENGTH_LONG).show();
+            public void onFailure(Call<List<String>> call, Throwable t) {
 
             }
         });
