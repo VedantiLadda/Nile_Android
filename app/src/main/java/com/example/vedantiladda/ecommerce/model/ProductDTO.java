@@ -9,11 +9,22 @@ public class ProductDTO {
     private String category;
     private List<MerchantDTO> merchants;
     private String description;
+
+    public String getDiscription() {
+        return discription;
+    }
+
+    public void setDiscription(String discription) {
+        this.discription = discription;
+    }
+
+    private String discription;
     private List<Map> attribute;
     private Integer stock;
     private List<String> images;
     private Integer price;
     private String brand;
+
 
     public String getProductId() {
         return productId;
@@ -48,11 +59,11 @@ public class ProductDTO {
     }
 
     public String getDescription() {
-        return description;
+        return getDiscription();
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        setDiscription(description);
     }
 
     public List<Map> getAttribute() {

@@ -40,6 +40,7 @@ public class EditProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.editprofile_activity);
+        final Button signin = findViewById(R.id.button3);
 
         final EditText editText4 = findViewById(R.id.editText4);
         final EditText editText5 = findViewById(R.id.editText5);
@@ -66,7 +67,8 @@ public class EditProfileActivity extends AppCompatActivity {
         final String editTextValue16 = editText16.getText().toString();
         final String editTextValue17 = editText17.getText().toString();
 
-    final     SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+        final     SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+        signin.setText(sharedPreferences.getString("firstName", "sign in"));
         Log.d("API",sharedPreferences.getString("firstName","firstName"));
         editText4.setText(sharedPreferences.getString("firstName",editTextValue4));
         editText5.setText(sharedPreferences.getString("lastName",editTextValue5));
@@ -192,6 +194,27 @@ public class EditProfileActivity extends AppCompatActivity {
                                     else {
                                         Toast.makeText(getApplicationContext(),"Successfully edited!",Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(EditProfileActivity.this,LogoutActivity.class);
+                                        UserEntity userEntity1=response.body();
+                                        SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putString("email", userEntity1.getEmail());
+                                        editor.putString("password", userEntity1.getPassword());
+                                        editor.putString("userId", userEntity1.getUserId());
+                                        editor.putString("firstName", userEntity1.getFirstName());
+                                        editor.putString("lastName", userEntity1.getLastName());
+                                        editor.putString("mobile", userEntity1.getMobile());
+                                        editor.putString("line1", userEntity1.getAddressEntity().getLine1());
+                                        editor.putString("line2", userEntity1.getAddressEntity().getLine2());
+                                        editor.putString("zip", userEntity1.getAddressEntity().getZip());
+                                        editor.putString("city", userEntity1.getAddressEntity().getCity());
+                                        editor.putString("landmark", userEntity1.getAddressEntity().getLandmark());
+                                        editor.putString("state", userEntity1.getAddressEntity().getState());
+                                        editor.apply();
+                                        Log.d("API",userEntity1.getFirstName());
+
+                                        signin.setText(userEntity1.getFirstName());
+
+
                                         startActivity(intent);
                                         finish();
                                     }

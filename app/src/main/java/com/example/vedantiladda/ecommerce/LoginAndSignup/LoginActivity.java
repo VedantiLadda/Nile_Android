@@ -3,8 +3,10 @@ package com.example.vedantiladda.ecommerce.LoginAndSignup;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vedantiladda.ecommerce.CredentialsActivity;
+import com.example.vedantiladda.ecommerce.LaunchActivity;
 import com.example.vedantiladda.ecommerce.LogoutAndEditProfile.EditProfileActivity;
 import com.example.vedantiladda.ecommerce.LogoutAndEditProfile.LogoutActivity;
 import com.example.vedantiladda.ecommerce.R;
@@ -43,7 +46,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
-
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+        final Button button = findViewById(R.id.button3);
+        button.setText("sign in");
         final EditText editText = findViewById(R.id.editText);
         final EditText editText9 = findViewById(R.id.editText9);
 
@@ -107,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("email", userEntity1.getEmail());
                             editor.putString("password", userEntity1.getPassword());
-                            editor.putString("id", userEntity1.getUserId());
+                            editor.putString("userId", userEntity1.getUserId());
                             editor.putString("firstName", userEntity1.getFirstName());
                             editor.putString("lastName", userEntity1.getLastName());
                             editor.putString("mobile", userEntity1.getMobile());
@@ -123,7 +129,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
                             Toast.makeText(getApplicationContext(), "successfully logged in!", Toast.LENGTH_SHORT).show();
-                            Intent intent2 = new Intent(LoginActivity.this, LogoutActivity.class);
+                            button.setText(sharedPreferences.getString("firstName", "  "));
+                            Intent intent2 = new Intent(LoginActivity.this, LaunchActivity.class);
                             startActivity(intent2);
                         }
 

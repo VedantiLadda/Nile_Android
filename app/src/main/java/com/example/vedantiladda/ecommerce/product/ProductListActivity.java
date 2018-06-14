@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.vedantiladda.ecommerce.IApiCall;
@@ -45,6 +46,15 @@ public class ProductListActivity extends AppCompatActivity implements ProductLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
+        SharedPreferences sharedPreferences = getSharedPreferences("user",Context.MODE_PRIVATE);
+        String LoginStatus = sharedPreferences.getString("userId", " ");
+        Button signin = findViewById(R.id.button3);
+        if(LoginStatus.equals(" ")){
+            signin.setText("sign in");
+        }
+        else{
+            signin.setText(sharedPreferences.getString("firstName", "  "));
+        }
         category = getIntent().getExtras().getString("categoryName");
         mRecyclerView = (RecyclerView) findViewById(R.id.ProductListRecycler);
 

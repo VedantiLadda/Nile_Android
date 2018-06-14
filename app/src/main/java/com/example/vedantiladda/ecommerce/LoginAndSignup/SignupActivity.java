@@ -40,7 +40,8 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup_activity);
-
+        Button button = findViewById(R.id.button3);
+        button.setText("sign in");
         //final EditText editText3 = findViewById(R.id.editText3);
         final EditText editText4 = findViewById(R.id.editText4);
         final EditText editText5 = findViewById(R.id.editText5);

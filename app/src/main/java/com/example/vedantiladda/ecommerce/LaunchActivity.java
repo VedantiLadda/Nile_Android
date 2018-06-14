@@ -8,8 +8,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.vedantiladda.ecommerce.LoginAndSignup.LoginActivity;
+import com.example.vedantiladda.ecommerce.LogoutAndEditProfile.LogoutActivity;
 import com.example.vedantiladda.ecommerce.model.Category;
 import com.example.vedantiladda.ecommerce.product.ProductListActivity;
 
@@ -29,9 +34,10 @@ public class LaunchActivity extends AppCompatActivity implements LaunchAdaptor.L
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<Category> categoryList = new ArrayList<>();
+    private String url = "http://10.177.2.201:8080";
     OkHttpClient client = new OkHttpClient.Builder().build();
     final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://10.177.2.201:8080")
+            .baseUrl(url)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build();
@@ -43,8 +49,33 @@ public class LaunchActivity extends AppCompatActivity implements LaunchAdaptor.L
         setContentView(R.layout.activity_launch);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        SharedPreferences sharedPreferences = getSharedPreferences("Login",Context.MODE_PRIVATE);
-        LoginStatus = sharedPreferences.getString("username", " ");
+        SharedPreferences sharedPreferences = getSharedPreferences("user",Context.MODE_PRIVATE);
+        LoginStatus = sharedPreferences.getString("userId", " ");
+        Button signin = findViewById(R.id.button3);
+        if(LoginStatus.equals(" ")){
+            signin.setText("sign in");
+        }
+        else{
+            signin.setText(sharedPreferences.getString("firstName", "  "));
+        }
+
+
+        signin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(LoginStatus.equals(" ")){
+                    Intent i = new Intent(LaunchActivity.this, LoginActivity.class);
+                    startActivity(i);
+                }
+                else{
+                    Intent i = new Intent(LaunchActivity.this, LogoutActivity.class);
+                    startActivity(i);
+                }
+
+
+            }
+        });
+
 
 
         mRecyclerView = (RecyclerView) findViewById(R.id.CategoryRecycler);
@@ -113,6 +144,7 @@ public class LaunchActivity extends AppCompatActivity implements LaunchAdaptor.L
 
             @Override
             public void onFailure(Call<List<Category>> call, Throwable t) {
+                Log.d("API",t.getMessage());
                 Toast.makeText(LaunchActivity.this, "failed", Toast.LENGTH_LONG).show();
 
             }

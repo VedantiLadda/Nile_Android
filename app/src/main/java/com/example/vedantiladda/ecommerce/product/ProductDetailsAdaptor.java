@@ -35,7 +35,7 @@ public class ProductDetailsAdaptor extends RecyclerView.Adapter<ProductDetailsAd
     @Override
     public void onBindViewHolder(@NonNull ProductDetailsAdaptor.MerchantHolder merchantHolder, int i) {
         final MerchantDTO merchant = merchants.get(i);
-        merchantHolder.price.setText(merchant.getPrice());
+        merchantHolder.price.setText(merchant.getPrice().toString());
         merchantHolder.merchant.setText(merchant.getName());
         merchantHolder.merchant.setOnClickListener(new View.OnClickListener(){
             @Override
