@@ -1,8 +1,6 @@
-package com.example.vedantiladda.ecommerce;
+package com.example.vedantiladda.ecommerce.buy;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,9 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.vedantiladda.ecommerce.IApiCall;
+import com.example.vedantiladda.ecommerce.LaunchActivity;
+import com.example.vedantiladda.ecommerce.R;
 import com.example.vedantiladda.ecommerce.model.ProductDTO;
 
 import java.util.ArrayList;

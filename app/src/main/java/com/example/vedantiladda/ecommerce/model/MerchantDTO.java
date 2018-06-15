@@ -1,10 +1,7 @@
 package com.example.vedantiladda.ecommerce.model;
 
 public class MerchantDTO {
-<<<<<<< HEAD
 
-=======
->>>>>>> master
     public String id;
     public String name;
     public Integer rating;
