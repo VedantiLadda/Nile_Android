@@ -30,7 +30,9 @@ package="com.example.vedantiladda.ecommerce">
     <activity android:name=".LoginAndSignup.LoginActivity" />
     <activity android:name=".LogoutAndEditProfile.LogoutActivity" />
     <activity android:name=".LogoutAndEditProfile.EditProfileActivity" />
-
+    <activity android:name=".BuyActivity" />
+    <activity android:name=".HistoryActivity" />
+    <activity android:name=".AddCartActivity"></activity>
 
 
 

@@ -22,6 +22,7 @@ public interface IApiCall {
     @GET("/product/getProductsByCategory/{category}" )
     Call<List<ProductDTO>> getAllProducts(@Path("category") String category);
 
+
     @GET("/cart/getAllCartItems/{userId}")// we need to fetch the details via user id, we get list of products added in the cart.
     Call <List<String>> getCartId(@Path("userId") String userId);
 
