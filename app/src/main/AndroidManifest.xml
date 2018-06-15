@@ -32,7 +32,7 @@ package="com.example.vedantiladda.ecommerce">
     <activity android:name=".LogoutAndEditProfile.EditProfileActivity" />
     <activity android:name=".buy.BuyActivity" />
     <activity android:name=".HistoryActivity" />
-    <activity android:name=".AddCartActivity"></activity>
+    <activity android:name=".cart.AddCartActivity"></activity>
 
 
 

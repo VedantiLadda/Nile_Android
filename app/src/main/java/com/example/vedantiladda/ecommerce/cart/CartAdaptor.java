@@ -1,7 +1,5 @@
-package com.example.vedantiladda.ecommerce;
+package com.example.vedantiladda.ecommerce.cart;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.vedantiladda.ecommerce.R;
 import com.example.vedantiladda.ecommerce.model.ProductDTO;
 
 import java.util.List;

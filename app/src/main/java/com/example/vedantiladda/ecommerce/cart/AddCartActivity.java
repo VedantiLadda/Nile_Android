@@ -1,4 +1,4 @@
-package com.example.vedantiladda.ecommerce;
+package com.example.vedantiladda.ecommerce.cart;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
+import com.example.vedantiladda.ecommerce.IApiCall;
+import com.example.vedantiladda.ecommerce.R;
 import com.example.vedantiladda.ecommerce.buy.BuyActivity;
 import com.example.vedantiladda.ecommerce.model.ProductDTO;
 
@@ -23,7 +24,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class AddCartActivity extends AppCompatActivity implements CartInterface{
+public class AddCartActivity extends AppCompatActivity implements CartInterface {
 
     static String url = "http://10.177.2.196:8080";
 

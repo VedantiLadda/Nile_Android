@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.vedantiladda.ecommerce.LoginAndSignup.LoginActivity;
 import com.example.vedantiladda.ecommerce.LogoutAndEditProfile.LogoutActivity;
+import com.example.vedantiladda.ecommerce.cart.Cart_Activity;
 import com.example.vedantiladda.ecommerce.model.Category;
 import com.example.vedantiladda.ecommerce.product.ProductListActivity;
 
@@ -52,6 +53,7 @@ public class LaunchActivity extends AppCompatActivity implements LaunchAdaptor.L
         SharedPreferences sharedPreferences = getSharedPreferences("user",Context.MODE_PRIVATE);
         LoginStatus = sharedPreferences.getString("userId", " ");
         Button signin = findViewById(R.id.button3);
+        Button cart = findViewById(R.id.button4);
         if(LoginStatus.equals(" ")){
             signin.setText("sign in");
         }
@@ -59,17 +61,32 @@ public class LaunchActivity extends AppCompatActivity implements LaunchAdaptor.L
             signin.setText(sharedPreferences.getString("firstName", "  "));
         }
 
+        cart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(LoginStatus.equals(" ")){
+                    Intent login = new Intent(LaunchActivity.this, LoginActivity.class);
+                    startActivity(login);
+                }
+                else{
+                    Intent cartActivity = new Intent(LaunchActivity.this, Cart_Activity.class);
+                    startActivity(cartActivity);
+                }
+
+            }
+        });
+
 
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(LoginStatus.equals(" ")){
-                    Intent i = new Intent(LaunchActivity.this, LoginActivity.class);
-                    startActivity(i);
+                    Intent login = new Intent(LaunchActivity.this, LoginActivity.class);
+                    startActivity(login);
                 }
                 else{
-                    Intent i = new Intent(LaunchActivity.this, LogoutActivity.class);
-                    startActivity(i);
+                    Intent userpage = new Intent(LaunchActivity.this, LogoutActivity.class);
+                    startActivity(userpage);
                 }
 
 
