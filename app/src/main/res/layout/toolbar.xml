@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -10,10 +11,9 @@
         android:layout_height="64dp"
         android:background="?attr/colorPrimary"
         android:backgroundTint="@color/colorPrimary"
-        android:theme="@style/AppTheme"
         android:minHeight="?attr/actionBarSize"
+        android:theme="@style/AppTheme"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:titleTextColor="@android:color/white">
@@ -22,39 +22,51 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:padding="0dp"
+            android:paddingLeft="0dp"
             android:weightSum="3">
 
-            <Button
-                android:id="@+id/button3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/login"
+                android:layout_width="26dp"
+                android:layout_height="47dp"
                 android:layout_margin="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/colorAccent" />
+                android:backgroundTint="@color/colorPrimary"
+                android:drawableRight="@drawable/lock"
+                android:elevation="0dp"
+                android:paddingRight="8dp"
+                android:gravity="center"
+                android:textColor="@color/black_overlay" />
 
             <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
+                android:id="@+id/nile"
+                android:layout_width="42dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="4dp"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-smallcaps"
                 android:padding="8dp"
-                android:text="  NILE"
-                android:textColor="@color/colorWhite"
+                android:text="   NILE"
+                android:textColor="@color/colorLogo"
                 android:textSize="26dp"
                 android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/button4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/cart"
+                android:layout_width="26dp"
+                android:layout_height="47dp"
                 android:layout_margin="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/colorAccent"
+                android:backgroundTint="@color/colorPrimary"
+                android:drawableRight="@drawable/cart"
                 android:elevation="0dp"
-                android:text="VIEW CART" />
+                android:gravity="center"
+                android:paddingRight="16dp"
+                android:textColor="@color/black_overlay" />
         </LinearLayout>
 
 

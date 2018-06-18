@@ -15,14 +15,21 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.vedantiladda.ecommerce.BaseActivity;
 import com.example.vedantiladda.ecommerce.IApiCall;
 import com.example.vedantiladda.ecommerce.LaunchActivity;
+import com.example.vedantiladda.ecommerce.LoginAndSignup.LoginActivity;
+import com.example.vedantiladda.ecommerce.LogoutAndEditProfile.LogoutActivity;
 import com.example.vedantiladda.ecommerce.R;
+import com.example.vedantiladda.ecommerce.cart.AddCartActivity;
+import com.example.vedantiladda.ecommerce.cart.Cart_Activity;
 import com.example.vedantiladda.ecommerce.model.MerchantDTO;
 import com.example.vedantiladda.ecommerce.model.ProductDTO;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -31,7 +38,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ProductDetailsActivity extends AppCompatActivity implements ProductDetailsAdaptor.MerchantCommunicator {
+public class ProductDetailsActivity extends BaseActivity implements ProductDetailsAdaptor.MerchantCommunicator {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -45,22 +52,23 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build();
+    String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
-        String LoginStatus = sharedPreferences.getString("userId", " ");
-        Button signin = findViewById(R.id.button3);
-        if(LoginStatus.equals(" ")){
-            signin.setText("sign in");
-        }
-        else{
-            signin.setText(sharedPreferences.getString("firstName", "  "));
-        }
+        userId = sharedPreferences.getString("userId", " ");
+
+        final Intent login = new Intent(ProductDetailsActivity.this, LoginActivity.class);
+        final Intent cartActivity = new Intent(ProductDetailsActivity.this, Cart_Activity.class);
+        final Intent userPage = new Intent(ProductDetailsActivity.this, LogoutActivity.class);
+        toolbarButtons(login,cartActivity,userPage);
+
         productId = getIntent().getExtras().getString("productId");
         getProductDetails(productId);
+
         mRecyclerView = (RecyclerView) findViewById(R.id.merchantRecycler);
 
         // use this setting to improve performance if you know that changes
@@ -97,11 +105,19 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     }
 
     @Override
-    public void onClickTextView(String id) {
-//        Intent i = new Intent(ProductDetailsActivity.this, AddCartActivity.class);
-//        i.putExtra("productId", productId);
-//        i.putExtra("merchantId", id);
-//        startActivity(i);
+    public void onClickButton(String id, String price ) {
+        Intent cart = new Intent(ProductDetailsActivity.this, AddCartActivity.class);
+        Intent loginIntent = new Intent (ProductDetailsActivity.this, LoginActivity.class);
+        if(userId.equals(" ")){
+            loginIntent.putExtra("productId", productId);
+            startActivity(loginIntent);
+        }
+        else{
+            cart.putExtra("productId", productId);
+            cart.putExtra("merchantId", id);
+            cart.putExtra("price",price );
+            startActivity(cart);
+        }
     }
 
     public void getProductDetails(String id){
@@ -119,26 +135,57 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
                 mAdapter.notifyDataSetChanged();
 
                 final TextView name = findViewById(R.id.name);
-        final TextView brand = findViewById(R.id.brand);
-        final TextView rating = findViewById(R.id.rating);
-        final TextView stock = findViewById(R.id.stock);
-        final TextView description = findViewById(R.id.description);
-        final TextView attributes = findViewById(R.id.attributes);
-        final ImageView image = findViewById(R.id.productImage);
+                final TextView brand = findViewById(R.id.brand);
+                //final TextView rating = findViewById(R.id.rating);
+                final TextView stock = findViewById(R.id.stock);
+                final TextView description = findViewById(R.id.descriptionContent);
+                final TextView height = findViewById(R.id.heightContent);
+                final TextView weight = findViewById(R.id.weightContent);
+                final TextView colour = findViewById(R.id.colourContent);
+                final TextView width = findViewById(R.id.widthContent);
+                final TextView material = findViewById(R.id.materialContent);
+                final ImageView image = findViewById(R.id.productImage);
+                final TextView price = findViewById(R.id.price);
 
-        name.setText(product.getProductName());
-        brand.setText(product.getBrand());
-        //rating.setText(product.getMerchants().get(0).getRating());
+                name.setText(product.getProductName());
+                brand.setText("By: " + product.getBrand());
+                price.setText("Rs. " + product.getPrice().toString());
+                //rating.setText(product.getMerchants().get(0).getRating());
                 if(product.getStock()>0) {
                     stock.setText("In Stock");
                 }
-        description.setText(product.getDescription());
-        attributes.setText(product.getAttribute().toString());
-        Glide.with(image.getContext()).load(product.getImages().get(0))
-                .thumbnail(0.5f)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(image);
+                description.setText(product.getDescription());
+
+                List<Map> list = product.getAttribute(); // this is what you have already
+
+                for (Map<String, Object> map : list) {
+                    for (Map.Entry<String, Object> entry : map.entrySet()) {
+                        String key = entry.getKey();
+                        Object value = entry.getValue();
+                        if(key.equals("height")){
+                            height.setText(value.toString());
+                        }
+                        if(key.equals("width")){
+                            width.setText(value.toString());
+                        }
+                        if(key.equals("weight")){
+                            weight.setText(value.toString());
+                        }
+                        if(key.equals("colour")){
+                            colour.setText(value.toString());
+                        }
+                        if(key.equals("materials")){
+                            material.setText(value.toString());
+                        }
+
+                    }
+                }
+
+                Glide.with(image.getContext()).load(product.getImages().get(0))
+                    .thumbnail(0.5f)
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(image);
                 Toast.makeText(ProductDetailsActivity.this, "received", Toast.LENGTH_LONG).show();
 
 

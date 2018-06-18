@@ -1,6 +1,8 @@
 package com.example.vedantiladda.ecommerce.cart;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,9 +10,13 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.vedantiladda.ecommerce.BaseActivity;
 import com.example.vedantiladda.ecommerce.IApiCall;
+import com.example.vedantiladda.ecommerce.LoginAndSignup.LoginActivity;
+import com.example.vedantiladda.ecommerce.LogoutAndEditProfile.LogoutActivity;
 import com.example.vedantiladda.ecommerce.R;
 import com.example.vedantiladda.ecommerce.buy.BuyActivity;
 import com.example.vedantiladda.ecommerce.model.ProductDTO;
@@ -25,7 +31,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class Cart_Activity extends AppCompatActivity implements CartInterface {
+public class Cart_Activity extends BaseActivity implements CartInterface {
     private RecyclerView mRecyclerView;
     static String url1="http://10.177.2.196:8080";
     private RecyclerView.Adapter mAdapter;
@@ -45,9 +51,8 @@ public class Cart_Activity extends AppCompatActivity implements CartInterface {
             .build();
 
     // we will get the user id.. check if there is user id in shared preferences... assign it to the string initialized
-//    SharedPreferences sharedPreferences = getSharedPreferences("training", Context.MODE_PRIVATE);
-//    String userId = sharedPreferences.getString("userId",null);
-String userId ="049bb238-11bc-4269-bd7e-b35133b765f3";
+
+    String userId;
 
 
     @Override
@@ -55,6 +60,12 @@ String userId ="049bb238-11bc-4269-bd7e-b35133b765f3";
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recyclerview);
+        SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+        userId = sharedPreferences.getString("userId",null);
+        final Intent login = new Intent(Cart_Activity.this, LoginActivity.class);
+        final Intent cartActivity = new Intent(Cart_Activity.this, Cart_Activity.class);
+        final Intent userPage = new Intent(Cart_Activity.this, LogoutActivity.class);
+        toolbarButtons(login,cartActivity,userPage);
         Log.i("application", "onCreate:of cart activity ");
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview1);
         // use this setting to improve performance if you know that changes
@@ -132,6 +143,8 @@ String userId ="049bb238-11bc-4269-bd7e-b35133b765f3";
                         if(response.body() != null){
                             productList.clear();
                             productList.addAll(response.body());
+                            TextView cart=findViewById(R.id.cart);
+                            cart.setText(response.body().size()+"");
                             mAdapter.notifyDataSetChanged();
                         }
                     }
@@ -183,6 +196,8 @@ String userId ="049bb238-11bc-4269-bd7e-b35133b765f3";
                                 public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
                                     productList.clear();
                                     productList.addAll(response.body());
+                                    TextView cart=findViewById(R.id.cart);
+                                    cart.setText(response.body().size()+"");
                                     mAdapter.notifyDataSetChanged();
                                 }
 

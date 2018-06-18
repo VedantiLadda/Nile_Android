@@ -2,9 +2,11 @@ package com.example.vedantiladda.ecommerce.product;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.vedantiladda.ecommerce.R;
@@ -21,6 +23,7 @@ public class ProductDetailsAdaptor extends RecyclerView.Adapter<ProductDetailsAd
 
     public ProductDetailsAdaptor(List<MerchantDTO> merchants, MerchantCommunicator communicator) {
         this.merchants = merchants;
+        this.communicator = communicator;
     }
 
     @NonNull
@@ -34,14 +37,16 @@ public class ProductDetailsAdaptor extends RecyclerView.Adapter<ProductDetailsAd
 
     @Override
     public void onBindViewHolder(@NonNull ProductDetailsAdaptor.MerchantHolder merchantHolder, int i) {
+        Log.d("API",merchants.size()+"");
         final MerchantDTO merchant = merchants.get(i);
         merchantHolder.price.setText(merchant.getPrice().toString());
         merchantHolder.merchant.setText(merchant.getName());
-        merchantHolder.merchant.setOnClickListener(new View.OnClickListener(){
+        merchantHolder.addCart.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 String id = merchant.getId();
-                communicator.onClickTextView(id);
+                String price = merchant.getPrice().toString();
+                communicator.onClickButton(id, price);
             }
         });
     }
@@ -53,15 +58,17 @@ public class ProductDetailsAdaptor extends RecyclerView.Adapter<ProductDetailsAd
 
     public class MerchantHolder extends RecyclerView.ViewHolder{
         public TextView merchant, price;
+        public Button addCart;
         public MerchantHolder(@NonNull View itemView){
             super(itemView);
             merchant = itemView.findViewById(R.id.merchantname);
             price = itemView.findViewById(R.id.merchantprice);
+            addCart = itemView.findViewById(R.id.add_to_cart);
 
         }
     }
 
     public interface MerchantCommunicator{
-        void onClickTextView(String id);
+        void onClickButton(String id, String price);
     }
 }

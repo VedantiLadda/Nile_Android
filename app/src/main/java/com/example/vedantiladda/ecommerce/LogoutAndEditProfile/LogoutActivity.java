@@ -10,11 +10,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.vedantiladda.ecommerce.BaseActivity;
 import com.example.vedantiladda.ecommerce.LaunchActivity;
+import com.example.vedantiladda.ecommerce.LoginAndSignup.LoginActivity;
 import com.example.vedantiladda.ecommerce.R;
+import com.example.vedantiladda.ecommerce.cart.Cart_Activity;
 import com.example.vedantiladda.ecommerce.model.UserEntity;
+import com.example.vedantiladda.ecommerce.product.ProductListActivity;
 
-public class LogoutActivity extends AppCompatActivity {
+public class LogoutActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +26,12 @@ public class LogoutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_logout);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        final SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
-        Button signin = findViewById(R.id.button3);
-        signin.setText(sharedPreferences.getString("firstName", "sign in"));
+        final SharedPreferences sharedPreferences = getSharedPreferences("user",Context.MODE_PRIVATE);
+        final Intent login = new Intent(LogoutActivity.this, LoginActivity.class);
+        final Intent cartActivity = new Intent(LogoutActivity.this, Cart_Activity.class);
+        final Intent userPage = new Intent(LogoutActivity.this, LogoutActivity.class);
+        toolbarButtons(login,cartActivity,userPage);
+
         Button edit_profile_button = findViewById(R.id.edit_profile_button);
         edit_profile_button.setOnClickListener(new View.OnClickListener() {
             @Override

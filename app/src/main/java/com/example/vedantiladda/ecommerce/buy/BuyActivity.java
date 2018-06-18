@@ -1,6 +1,8 @@
 package com.example.vedantiladda.ecommerce.buy;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,10 +10,16 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.vedantiladda.ecommerce.BaseActivity;
 import com.example.vedantiladda.ecommerce.IApiCall;
 import com.example.vedantiladda.ecommerce.LaunchActivity;
+import com.example.vedantiladda.ecommerce.LoginAndSignup.LoginActivity;
+import com.example.vedantiladda.ecommerce.LogoutAndEditProfile.LogoutActivity;
 import com.example.vedantiladda.ecommerce.R;
+import com.example.vedantiladda.ecommerce.cart.Cart_Activity;
 import com.example.vedantiladda.ecommerce.model.ProductDTO;
 
 import java.util.ArrayList;
@@ -24,12 +32,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class BuyActivity extends AppCompatActivity implements BuyInterface {
-//    SharedPreferences sharedPreferences = getSharedPreferences("training", Context.MODE_PRIVATE);
-//    String userId = sharedPreferences.getString("userId",null);
-    static String url2="http://10.177.2.196:8080";
+public class BuyActivity extends BaseActivity implements BuyInterface {
 
-    String userId ="049bb238-11bc-4269-bd7e-b35133b765f3";
+
+    //String userId ="049bb238-11bc-4269-bd7e-b35133b765f3";
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -49,13 +55,20 @@ public class BuyActivity extends AppCompatActivity implements BuyInterface {
             .client(client)
             .build();
 
-
+    String userId, emailId;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.buy_layout);
+        SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+        userId = sharedPreferences.getString("userId", null);
+        emailId = sharedPreferences.getString("email", null);
+        final Intent login = new Intent(BuyActivity.this, LoginActivity.class);
+        final Intent cartActivity = new Intent(BuyActivity.this, Cart_Activity.class);
+        final Intent userPage = new Intent(BuyActivity.this, LogoutActivity.class);
+        toolbarButtons(login, cartActivity, userPage);
         Log.i("application", "onCreate: of buy activity ");
 
 
@@ -69,8 +82,13 @@ public class BuyActivity extends AppCompatActivity implements BuyInterface {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new BuyAdaptor(productList,BuyActivity.this);
+        mAdapter = new BuyAdaptor(productList, BuyActivity.this);
         mRecyclerView.setAdapter(mAdapter);
+        final TextView txtTotalPrice, txtPrice;
+        txtTotalPrice = (TextView) findViewById(R.id.totalPrice);
+        txtPrice = (TextView) findViewById(R.id.price);
+
+
         ///added this part
 //        Product product1=new Product();
 //        product1.setProductName("Galaxy61");
@@ -100,18 +118,18 @@ public class BuyActivity extends AppCompatActivity implements BuyInterface {
             @Override
             public void onClick(View view) {
                 //onclicking it should go to launcher page
-                Intent intent = new Intent(BuyActivity.this,LaunchActivity.class);
+                Intent intent = new Intent(BuyActivity.this, LaunchActivity.class);
                 startActivity(intent);
             }
         });
-        url2="http://10.177.2.196:8080";
+
         IApiCall iApiCall = retrofit.create(IApiCall.class);
         final Call<List<String>> getCartId = iApiCall.getCartId(userId);
         // this is the call to fet the cart product list
         getCartId.enqueue(new Callback<List<String>>() {
             @Override
             public void onResponse(Call<List<String>> call, Response<List<String>> response) {
-                url2 = "http://10.177.2.201:8080";
+
                 IApiCall iApiCall = retrofit2.create(IApiCall.class);
                 final Call<List<ProductDTO>> getCartProducts = iApiCall.getCartProducts(response.body());
                 getCartProducts.enqueue(new Callback<List<ProductDTO>>() {
@@ -119,14 +137,35 @@ public class BuyActivity extends AppCompatActivity implements BuyInterface {
                     public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
                         productList.clear();
                         productList.addAll(response.body());
-                        mAdapter.notifyDataSetChanged();
-                   //     TextView txtTotalPrice;
-                     //   TextView txtPrice;
-                       // txtTotalPrice = (TextView) findViewById(R.id.totalPrice);
-                       // txtPrice = (TextView) findViewById(R.id.price);
 
-                     //   txtPrice.setText(""+BuyAdaptor.priceSum);
-                       // txtTotalPrice.setText("Total Price");
+                        mAdapter.notifyDataSetChanged();
+                        IApiCall iApiCall1 = retrofit.create(IApiCall.class);
+                        Log.d("API", "called");
+                        final Call<String> getOrderId = iApiCall1.getOrderId(userId, emailId);
+                        getOrderId.enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                //set the text orderid
+                                Log.d("count", response.body());
+                                TextView orderId1 = (TextView) findViewById(R.id.orderId);
+                                orderId1.setText(response.body());
+                                Toast.makeText(BuyActivity.this, "success", Toast.LENGTH_SHORT).show();
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                                Log.d("API", t.getMessage());
+                                System.out.println(t);
+                             //   Toast.makeText(BuyActivity.this, "failed!", Toast.LENGTH_SHORT).show();
+
+
+                            }
+                        });
+                        double sum = priceSum();
+                        txtPrice.setText("" + sum);
+                        txtTotalPrice.setText("Total Price");
+
 
                     }
 
@@ -144,6 +183,17 @@ public class BuyActivity extends AppCompatActivity implements BuyInterface {
             }
         });
 
+
+    }
+
+    @Override
+    public double priceSum() {
+        //
+        double sum = 0;
+        for (ProductDTO productDTO : productList) {
+            sum += productDTO.getPrice();
+        }
+        return sum;
 
 
     }

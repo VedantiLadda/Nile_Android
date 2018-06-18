@@ -52,7 +52,7 @@ public class ProductListAdaptor extends RecyclerView.Adapter<ProductListAdaptor.
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(productListHolder.image);
-        productListHolder.description.setText(product.getDescription());
+        productListHolder.brand.setText(product.getBrand());
         productListHolder.name.setText(product.getProductName());
         productListHolder.price.setText(product.getPrice().toString());
         productListHolder.constraint.setOnClickListener(new View.OnClickListener(){
@@ -74,13 +74,13 @@ public class ProductListAdaptor extends RecyclerView.Adapter<ProductListAdaptor.
     public class ProductListHolder extends RecyclerView.ViewHolder {
         public ConstraintLayout constraint;
         public ImageView image;
-        public TextView name, price, description;
+        public TextView name, price, brand;
         public ProductListHolder(@NonNull View itemView) {
             super(itemView);
             constraint = itemView.findViewById(R.id.Product);
             image = itemView.findViewById(R.id.Product1Image);
             name = itemView.findViewById(R.id.Product1);
-            description = itemView.findViewById(R.id.Product1Description);
+            brand = itemView.findViewById(R.id.Product1Description);
             price = itemView.findViewById(R.id.Product1Price);
 
         }

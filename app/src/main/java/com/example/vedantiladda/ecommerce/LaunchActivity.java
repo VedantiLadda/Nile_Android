@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -29,7 +30,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class LaunchActivity extends AppCompatActivity implements LaunchAdaptor.LaunchCommunicator{
+public class LaunchActivity extends BaseActivity implements LaunchAdaptor.LaunchCommunicator{
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -42,7 +43,7 @@ public class LaunchActivity extends AppCompatActivity implements LaunchAdaptor.L
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build();
-    String LoginStatus;
+//    String LoginStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,63 +51,22 @@ public class LaunchActivity extends AppCompatActivity implements LaunchAdaptor.L
         setContentView(R.layout.activity_launch);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        SharedPreferences sharedPreferences = getSharedPreferences("user",Context.MODE_PRIVATE);
-        LoginStatus = sharedPreferences.getString("userId", " ");
-        Button signin = findViewById(R.id.button3);
-        Button cart = findViewById(R.id.button4);
-        if(LoginStatus.equals(" ")){
-            signin.setText("sign in");
-        }
-        else{
-            signin.setText(sharedPreferences.getString("firstName", "  "));
-        }
-
-        cart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(LoginStatus.equals(" ")){
-                    Intent login = new Intent(LaunchActivity.this, LoginActivity.class);
-                    startActivity(login);
-                }
-                else{
-                    Intent cartActivity = new Intent(LaunchActivity.this, Cart_Activity.class);
-                    startActivity(cartActivity);
-                }
-
-            }
-        });
-
-
-        signin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(LoginStatus.equals(" ")){
-                    Intent login = new Intent(LaunchActivity.this, LoginActivity.class);
-                    startActivity(login);
-                }
-                else{
-                    Intent userpage = new Intent(LaunchActivity.this, LogoutActivity.class);
-                    startActivity(userpage);
-                }
-
-
-            }
-        });
-
-
-
+        final Intent login = new Intent(LaunchActivity.this, LoginActivity.class);
+        final Intent cartActivity = new Intent(LaunchActivity.this, Cart_Activity.class);
+        final Intent userPage = new Intent(LaunchActivity.this, LogoutActivity.class);
+        toolbarButtons(login, cartActivity, userPage);
         mRecyclerView = (RecyclerView) findViewById(R.id.CategoryRecycler);
-
-
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+//        mLayoutManager = new LinearLayoutManager(this);
+//        mRecyclerView.setLayoutManager(mLayoutManager);
 
+        mLayoutManager = new GridLayoutManager(this, 2, 1, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         // specify an adapter (see also next example)
         mAdapter = new LaunchAdaptor(categoryList, LaunchActivity.this);
         mRecyclerView.setAdapter(mAdapter);

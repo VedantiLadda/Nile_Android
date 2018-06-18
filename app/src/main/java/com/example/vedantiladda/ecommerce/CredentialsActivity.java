@@ -13,7 +13,7 @@ public class CredentialsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_credentials);
 
-        TextView textView14 = findViewById(R.id.textView14);
+        TextView textView14 = findViewById(R.id.widthContent);
         TextView textView15 = findViewById(R.id.textView15);
 
         SharedPreferences sharedPreferences = getSharedPreferences("Sample", Context.MODE_PRIVATE);

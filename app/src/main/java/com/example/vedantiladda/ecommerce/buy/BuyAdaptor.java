@@ -16,7 +16,6 @@ public class BuyAdaptor extends RecyclerView.Adapter<BuyAdaptor.BuyHolder> {
 
     private List<ProductDTO> products;
     private BuyInterface buyInterface;
-    public static double priceSum=0;
 
 
 
@@ -41,10 +40,7 @@ public class BuyAdaptor extends RecyclerView.Adapter<BuyAdaptor.BuyHolder> {
         //buyHolder.txtsno.setText(i);//i is anyway continous numbers...
         buyHolder.txtproname.setText(products.get(i).getProductName());
         buyHolder.txtproprice.setText(products.get(i).getPrice().toString());
-        buyHolder.txtsno.setText(i+"");
-        double price =  products.get(i).getPrice();
-        priceSum = priceSum + price;
-        //set the values.. from
+        buyHolder.txtsno.setText((i+1)+"");
 
     }
 
@@ -71,5 +67,5 @@ public class BuyAdaptor extends RecyclerView.Adapter<BuyAdaptor.BuyHolder> {
 }
 interface BuyInterface{
 
-//public void priceSum(double pricesum);
+public double priceSum();
 }

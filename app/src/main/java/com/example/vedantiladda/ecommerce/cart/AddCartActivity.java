@@ -1,6 +1,8 @@
 package com.example.vedantiladda.ecommerce.cart;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,11 +10,17 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.vedantiladda.ecommerce.BaseActivity;
 import com.example.vedantiladda.ecommerce.IApiCall;
+import com.example.vedantiladda.ecommerce.LoginAndSignup.LoginActivity;
+import com.example.vedantiladda.ecommerce.LogoutAndEditProfile.LogoutActivity;
 import com.example.vedantiladda.ecommerce.R;
 import com.example.vedantiladda.ecommerce.buy.BuyActivity;
 import com.example.vedantiladda.ecommerce.model.ProductDTO;
+import com.example.vedantiladda.ecommerce.product.ProductListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +32,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class AddCartActivity extends AppCompatActivity implements CartInterface {
+public class AddCartActivity extends BaseActivity implements CartInterface {
 
     static String url = "http://10.177.2.196:8080";
 
@@ -33,7 +41,7 @@ public class AddCartActivity extends AppCompatActivity implements CartInterface 
     private RecyclerView.LayoutManager mLayoutManager;
     private List<ProductDTO> productList = new ArrayList<>();
     OkHttpClient client = new OkHttpClient.Builder().build();
-
+    String userId;
     final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("http://10.177.2.196:8080") // need to change the url
             .addConverterFactory(GsonConverterFactory.create())
@@ -47,15 +55,21 @@ public class AddCartActivity extends AppCompatActivity implements CartInterface 
             .build();
 
     // we will get the user id.. check if there is user id in shared preferences... assign it to the string initialized
-//    SharedPreferences sharedPreferences = getSharedPreferences("training", Context.MODE_PRIVATE);
-//    String userId = sharedPreferences.getString("userId",null);
-    String userId ="049bb238-11bc-4269-bd7e-b35133b765f3";
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recyclerview);
+        SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+        userId = sharedPreferences.getString("userId","");
+
+        final Intent login = new Intent(AddCartActivity.this, LoginActivity.class);
+        final Intent cartActivity = new Intent(AddCartActivity.this, Cart_Activity.class);
+        final Intent userPage = new Intent(AddCartActivity.this, LogoutActivity.class);
+        toolbarButtons(login,cartActivity,userPage);
         Log.i("application", "onCreate:of cart activity ");
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview1);
         // use this setting to improve performance if you know that changes
@@ -84,28 +98,32 @@ public class AddCartActivity extends AppCompatActivity implements CartInterface 
         Intent intent1 = getIntent();
         String productId = intent1.getStringExtra("productId");
         String merchantId = intent1.getStringExtra("merchantId");
+        String productPrice = intent1.getStringExtra("price");
 
 
         IApiCall iApiCall = retrofit.create(IApiCall.class);
-        final Call<Void> addProduct = iApiCall.addProduct(userId,productId,merchantId);
+        final Call<Void> addProduct = iApiCall.addProduct(userId,productId,merchantId,productPrice);
         addProduct.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 Log.i("application", "trying to refresh the view ");
 
-                IApiCall iApiCall2 = retrofit.create(IApiCall.class);
+                final IApiCall iApiCall2 = retrofit.create(IApiCall.class);
                 final Call<List<String>> getAll = iApiCall2.getCartId(userId);
                 getAll.enqueue(new Callback<List<String>>() {
                     @Override
                     public void onResponse(Call<List<String>> call, Response<List<String>> response) {
                         url = "http://10.177.2.201:8080";
-                        IApiCall iApiCall = retrofit2.create(IApiCall.class);
+                        final IApiCall iApiCall = retrofit2.create(IApiCall.class);
                         final Call<List<ProductDTO>> getCartProducts = iApiCall.getCartProducts(response.body());
                         getCartProducts.enqueue(new Callback<List<ProductDTO>>() {
                             @Override
                             public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
                                 productList.clear();
                                 productList.addAll(response.body());
+                                TextView cart=findViewById(R.id.cart);
+                                cart.setText(response.body().size()+"");
+
                                 mAdapter.notifyDataSetChanged();
                             }
 

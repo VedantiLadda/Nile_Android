@@ -1,13 +1,17 @@
 package com.example.vedantiladda.ecommerce;
 
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.vedantiladda.ecommerce.model.Category;
 
 import java.util.List;
@@ -34,8 +38,14 @@ public class LaunchAdaptor extends RecyclerView.Adapter<LaunchAdaptor.CategoryHo
     @Override
     public void onBindViewHolder(@NonNull final LaunchAdaptor.CategoryHolder categoryHolder, int i) {
         final Category category = categories.get(i);
+
+        Glide.with(categoryHolder.categoryImage.getContext()).load(category.getCategoryImage())
+                .thumbnail(0.5f)
+                .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(categoryHolder.categoryImage);
         categoryHolder.categoryName.setText(category.getCategoryName());
-        categoryHolder.categoryName.setOnClickListener(new View.OnClickListener(){
+        categoryHolder.constraint.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 Category category = categories.get(categoryHolder.getAdapterPosition());
@@ -52,9 +62,13 @@ public class LaunchAdaptor extends RecyclerView.Adapter<LaunchAdaptor.CategoryHo
 
     public class CategoryHolder extends RecyclerView.ViewHolder{
         public TextView categoryName;
+        public ImageView categoryImage;
+        public ConstraintLayout constraint;
         public CategoryHolder(@NonNull View itemView) {
             super(itemView);
-            categoryName = (TextView) itemView.findViewById(R.id.Category);
+            categoryName = itemView.findViewById(R.id.Category);
+            constraint = itemView.findViewById(R.id.launchConstraint);
+            categoryImage = itemView.findViewById(R.id.categoryImage);
 
         }
     }

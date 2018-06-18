@@ -7,12 +7,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.vedantiladda.ecommerce.BaseActivity;
 import com.example.vedantiladda.ecommerce.IApiCall;
 import com.example.vedantiladda.ecommerce.LaunchActivity;
+import com.example.vedantiladda.ecommerce.LoginAndSignup.LoginActivity;
+import com.example.vedantiladda.ecommerce.LogoutAndEditProfile.LogoutActivity;
 import com.example.vedantiladda.ecommerce.R;
+import com.example.vedantiladda.ecommerce.cart.Cart_Activity;
 import com.example.vedantiladda.ecommerce.model.Category;
 import com.example.vedantiladda.ecommerce.model.ProductDTO;
 
@@ -26,7 +31,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ProductListActivity extends AppCompatActivity implements ProductListAdaptor.ProductListCommunicator{
+public class ProductListActivity extends BaseActivity implements ProductListAdaptor.ProductListCommunicator{
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -46,15 +51,20 @@ public class ProductListActivity extends AppCompatActivity implements ProductLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
-        SharedPreferences sharedPreferences = getSharedPreferences("user",Context.MODE_PRIVATE);
-        String LoginStatus = sharedPreferences.getString("userId", " ");
-        Button signin = findViewById(R.id.button3);
-        if(LoginStatus.equals(" ")){
-            signin.setText("sign in");
-        }
-        else{
-            signin.setText(sharedPreferences.getString("firstName", "  "));
-        }
+        final Intent login = new Intent(ProductListActivity.this, LoginActivity.class);
+        final Intent cartActivity = new Intent(ProductListActivity.this, Cart_Activity.class);
+        final Intent userPage = new Intent(ProductListActivity.this, LogoutActivity.class);
+        toolbarButtons(login,cartActivity,userPage);
+
+        Button home = findViewById(R.id.ProductListHome);
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent launchActivity = new Intent(ProductListActivity.this, LaunchActivity.class);
+                startActivity(launchActivity);
+
+            }
+        });
         category = getIntent().getExtras().getString("categoryName");
         mRecyclerView = (RecyclerView) findViewById(R.id.ProductListRecycler);
 

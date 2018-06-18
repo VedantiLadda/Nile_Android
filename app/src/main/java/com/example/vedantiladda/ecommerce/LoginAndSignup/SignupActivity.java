@@ -11,10 +11,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.vedantiladda.ecommerce.BaseActivity;
+import com.example.vedantiladda.ecommerce.LogoutAndEditProfile.LogoutActivity;
 import com.example.vedantiladda.ecommerce.R;
+import com.example.vedantiladda.ecommerce.cart.Cart_Activity;
 import com.example.vedantiladda.ecommerce.model.AddressEntity;
 import com.example.vedantiladda.ecommerce.model.UserEntity;
 import com.example.vedantiladda.ecommerce.Utility.Validation;
+import com.example.vedantiladda.ecommerce.product.ProductListActivity;
 
 import okhttp3.OkHttpClient;
 //import okhttp3.Response;
@@ -24,7 +28,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class SignupActivity extends AppCompatActivity {
+public class SignupActivity extends BaseActivity {
     private Validation validation;
     private Retrofit retrofit;
     private String url = "https://lit-anchorage-36944.herokuapp.com/";
@@ -40,8 +44,10 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup_activity);
-        Button button = findViewById(R.id.button3);
-        button.setText("sign in");
+        final Intent login = new Intent(SignupActivity.this, LoginActivity.class);
+        final Intent cartActivity = new Intent(SignupActivity.this, Cart_Activity.class);
+        final Intent userPage = new Intent(SignupActivity.this, LogoutActivity.class);
+        toolbarButtons(login,cartActivity,userPage);
         //final EditText editText3 = findViewById(R.id.editText3);
         final EditText editText4 = findViewById(R.id.editText4);
         final EditText editText5 = findViewById(R.id.editText5);

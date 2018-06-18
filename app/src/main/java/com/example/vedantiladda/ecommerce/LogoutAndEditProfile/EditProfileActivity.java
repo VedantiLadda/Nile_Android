@@ -3,7 +3,6 @@ package com.example.vedantiladda.ecommerce.LogoutAndEditProfile;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 //import android.util.Log;
 import android.util.Log;
@@ -12,8 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.vedantiladda.ecommerce.BaseActivity;
+import com.example.vedantiladda.ecommerce.LoginAndSignup.LoginActivity;
 import com.example.vedantiladda.ecommerce.LoginAndSignup.PostAll;
 import com.example.vedantiladda.ecommerce.R;
+import com.example.vedantiladda.ecommerce.cart.Cart_Activity;
 import com.example.vedantiladda.ecommerce.model.AddressEntity;
 import com.example.vedantiladda.ecommerce.model.UserEntity;
 
@@ -24,7 +26,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class EditProfileActivity extends AppCompatActivity {
+public class EditProfileActivity extends BaseActivity {
 
     private Retrofit retrofit;
     private String url = "https://lit-anchorage-36944.herokuapp.com/";
@@ -40,8 +42,10 @@ public class EditProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.editprofile_activity);
-        final Button signin = findViewById(R.id.button3);
-
+        final Intent login = new Intent(EditProfileActivity.this, LoginActivity.class);
+        final Intent cartActivity = new Intent(EditProfileActivity.this, Cart_Activity.class);
+        final Intent userPage = new Intent(EditProfileActivity.this, LogoutActivity.class);
+        toolbarButtons(login,cartActivity,userPage);
         final EditText editText4 = findViewById(R.id.editText4);
         final EditText editText5 = findViewById(R.id.editText5);
         //final EditText editText6 = findViewById(R.id.editText6);
@@ -68,7 +72,6 @@ public class EditProfileActivity extends AppCompatActivity {
         final String editTextValue17 = editText17.getText().toString();
 
         final     SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
-        signin.setText(sharedPreferences.getString("firstName", "sign in"));
         Log.d("API",sharedPreferences.getString("firstName","firstName"));
         editText4.setText(sharedPreferences.getString("firstName",editTextValue4));
         editText5.setText(sharedPreferences.getString("lastName",editTextValue5));
@@ -211,10 +214,6 @@ public class EditProfileActivity extends AppCompatActivity {
                                         editor.putString("state", userEntity1.getAddressEntity().getState());
                                         editor.apply();
                                         Log.d("API",userEntity1.getFirstName());
-
-                                        signin.setText(userEntity1.getFirstName());
-
-
                                         startActivity(intent);
                                         finish();
                                     }

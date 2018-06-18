@@ -14,13 +14,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.vedantiladda.ecommerce.BaseActivity;
 import com.example.vedantiladda.ecommerce.CredentialsActivity;
+import com.example.vedantiladda.ecommerce.IApiCall;
 import com.example.vedantiladda.ecommerce.LaunchActivity;
 import com.example.vedantiladda.ecommerce.LogoutAndEditProfile.EditProfileActivity;
 import com.example.vedantiladda.ecommerce.LogoutAndEditProfile.LogoutActivity;
 import com.example.vedantiladda.ecommerce.R;
+import com.example.vedantiladda.ecommerce.cart.Cart_Activity;
 import com.example.vedantiladda.ecommerce.model.AddressEntity;
 import com.example.vedantiladda.ecommerce.model.UserEntity;
+import com.example.vedantiladda.ecommerce.product.ProductDetailsActivity;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -29,7 +33,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     private Retrofit retrofit;
     private String url = "https://lit-anchorage-36944.herokuapp.com/";
@@ -46,10 +50,12 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        final Button button = findViewById(R.id.button3);
-        button.setText("sign in");
+        final Intent login = new Intent(LoginActivity.this, LoginActivity.class);
+        final Intent cartActivity = new Intent(LoginActivity.this, Cart_Activity.class);
+        final Intent userPage = new Intent(LoginActivity.this, LogoutActivity.class);
+        toolbarButtons(login,cartActivity,userPage);
         final EditText editText = findViewById(R.id.editText);
         final EditText editText9 = findViewById(R.id.editText9);
 
@@ -96,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                 userEntity.setEmail(editText.getText().toString());
                 userEntity.setPassword(editText9.getText().toString());
 
-                PostAll login = retrofit.create(PostAll.class);
+                final PostAll login = retrofit.create(PostAll.class);
                 Call<UserEntity> loginCall = login.loginDetails(userEntity);
 
                 loginCall.enqueue(new Callback<UserEntity>() {
@@ -107,6 +113,9 @@ public class LoginActivity extends AppCompatActivity {
 
                         }
                         else {
+
+
+
                             UserEntity userEntity1=response.body();
 
                             SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
@@ -129,9 +138,16 @@ public class LoginActivity extends AppCompatActivity {
 
 
                             Toast.makeText(getApplicationContext(), "successfully logged in!", Toast.LENGTH_SHORT).show();
-                            button.setText(sharedPreferences.getString("firstName", "  "));
-                            Intent intent2 = new Intent(LoginActivity.this, LaunchActivity.class);
-                            startActivity(intent2);
+                            Intent loginIntent = getIntent();
+                            if(loginIntent.getStringExtra("productId") == null){
+                                Intent intent2 = new Intent(LoginActivity.this, LaunchActivity.class);
+                                startActivity(intent2);
+                            }
+                            else {
+                                Intent productDetails = new Intent(LoginActivity.this, ProductDetailsActivity.class);
+                                productDetails.putExtra("productId", loginIntent.getStringExtra("productId"));
+                                startActivity(productDetails);
+                            }
                         }
 
                     }

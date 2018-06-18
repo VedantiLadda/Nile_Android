@@ -32,10 +32,16 @@ public interface IApiCall {
 
     //add item to te cart need to send user id and product id
 
-    @GET("/cart/addToCart/{userId}/{productId}/{merchantId}")
-    Call <Void> addProduct(@Path("userId") String userId,@Path("productId") String productId,@Path("merchantId") String merchantId);
+    @GET("/cart/addToCart/{userId}/{productId}/{merchantId}/{productPrice}")
+    Call <Void> addProduct(@Path("userId") String userId,@Path("productId") String productId,@Path("merchantId") String merchantId, @Path("productPrice") String productPrice);
 
     @POST("/product/getProductsByIds")
     Call <List<ProductDTO>> getCartProducts(@Body List<String> stringList);
+
+    @GET("order/checkout/{userId}/{emailId}")
+    Call<String> getOrderId(@Path("userId") String userId, @Path("emailId") String emailId);
+
+    @GET("/cart/count/{userId}")
+    Call<Integer> getCartCount(@Path("userId") String userId);
 
 }
