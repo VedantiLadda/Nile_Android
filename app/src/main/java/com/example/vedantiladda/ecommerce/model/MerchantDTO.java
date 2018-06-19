@@ -2,17 +2,28 @@ package com.example.vedantiladda.ecommerce.model;
 
 public class MerchantDTO {
 
-    public String id;
+    @Override
+    public String toString() {
+        return "MerchantDTO{" +
+                "id='" + mId + '\'' +
+                ", name='" + name + '\'' +
+                ", rating=" + rating +
+                ", price=" + price +
+                '}';
+    }
+
+    public String mId;
     public String name;
     public Integer rating;
     public Integer price;
 
-    public String getId() {
-        return id;
+
+    public String getmId() {
+        return mId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setmId(String mId) {
+        this.mId = mId;
     }
 
     public String getName() {

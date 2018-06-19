@@ -19,10 +19,9 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="$USER_HOME$/Downloads/cart_icon.png" />
-                                      <entry key="outputName" value="cart" />
+                                      <entry key="imageAsset" value="$USER_HOME$/Downloads/trash-can-icon-12.png" />
                                       <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="010103" />
+                                      <entry key="themeColor" value="960626" />
                                     </map>
                                   </option>
                                 </PersistentState>

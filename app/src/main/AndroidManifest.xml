@@ -32,7 +32,8 @@
         <activity android:name=".buy.BuyActivity" />
         <activity android:name=".cart.Cart_Activity" />
         <activity android:name=".cart.AddCartActivity" />
-        <activity android:name=".BaseActivity"></activity>
+        <activity android:name=".BaseActivity" />
+        <activity android:name=".search.SearchActivity"></activity>
     </application>
 
 </manifest>

@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -43,17 +44,19 @@ public class BaseActivity extends AppCompatActivity {
         final TextView cart = findViewById(R.id.cart);
         if (loginStatus.equals(" ")) {
             signin.setText("SIGN IN");
+            signin.setGravity(Gravity.CENTER);
             cart.setText("0");
 
             //signin.setCompoundDrawables();
 
         } else {
             signin.setText(sharedPreferences.getString("firstName", "  ") + " ");
+            signin.setGravity(Gravity.CENTER);
             signin.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             signin.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.loginicon, 0);
             OkHttpClient client = new OkHttpClient.Builder().build();
             final Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://10.177.2.196:8080") // need to change the url
+                    .baseUrl("http://10.177.2.196:8089") // need to change the url
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(client)
                     .build();
@@ -61,7 +64,9 @@ public class BaseActivity extends AppCompatActivity {
             count.enqueue(new Callback<Integer>() {
                 @Override
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
-                    cart.setText(response.body().toString());
+                    if(response.body() != null) {
+                        cart.setText(response.body().toString());
+                    }
                 }
 
                 @Override

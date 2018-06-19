@@ -8,7 +8,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="55dp"
         android:background="?attr/colorPrimary"
         android:backgroundTint="@color/colorPrimary"
         android:minHeight="?attr/actionBarSize"
@@ -31,13 +31,14 @@
                 android:layout_width="26dp"
                 android:layout_height="47dp"
                 android:layout_margin="8dp"
+                android:layout_marginBottom="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/colorPrimary"
                 android:drawableRight="@drawable/lock"
                 android:elevation="0dp"
-                android:paddingRight="8dp"
                 android:gravity="center"
+                android:paddingRight="8dp"
                 android:textColor="@color/black_overlay" />
 
             <TextView

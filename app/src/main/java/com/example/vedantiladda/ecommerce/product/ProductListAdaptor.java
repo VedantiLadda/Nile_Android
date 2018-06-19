@@ -53,13 +53,15 @@ public class ProductListAdaptor extends RecyclerView.Adapter<ProductListAdaptor.
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(productListHolder.image);
         productListHolder.brand.setText(product.getBrand());
-        productListHolder.name.setText(product.getProductName());
-        productListHolder.price.setText(product.getPrice().toString());
+        productListHolder.name.setText(product.getName());
+        if(product.getDefaultMerchantPrice()!=null) {
+            productListHolder.price.setText(product.getDefaultMerchantPrice().toString());
+        }
         productListHolder.constraint.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 ProductDTO product = (products.get(productListHolder.getAdapterPosition()));
-                String id = product.getProductId();
+                String id = product.getId();
                 communicator.onClickTextView(id);
             }
         });

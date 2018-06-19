@@ -8,8 +8,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,8 +27,11 @@ import com.example.vedantiladda.ecommerce.LogoutAndEditProfile.LogoutActivity;
 import com.example.vedantiladda.ecommerce.R;
 import com.example.vedantiladda.ecommerce.cart.AddCartActivity;
 import com.example.vedantiladda.ecommerce.cart.Cart_Activity;
+import com.example.vedantiladda.ecommerce.model.DocsItem;
 import com.example.vedantiladda.ecommerce.model.MerchantDTO;
 import com.example.vedantiladda.ecommerce.model.ProductDTO;
+import com.example.vedantiladda.ecommerce.model.SearchResponse;
+import com.example.vedantiladda.ecommerce.search.SearchAPI;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,14 +52,21 @@ public class ProductDetailsActivity extends BaseActivity implements ProductDetai
     String productId;
     private List<MerchantDTO> merchantList = new ArrayList<>();
     private ProductDTO product = new ProductDTO();
-    private String url = "http://10.177.2.201:8080";
+    private String url = "http://10.177.2.196:8080";
+    private static String URL="http://10.177.2.201:8983";
     OkHttpClient client = new OkHttpClient.Builder().build();
+    final Retrofit retrofitSearch = new Retrofit.Builder()
+            .baseUrl(URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build();
     final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(url)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build();
     String userId;
+    Integer quantity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,42 +80,43 @@ public class ProductDetailsActivity extends BaseActivity implements ProductDetai
         final Intent userPage = new Intent(ProductDetailsActivity.this, LogoutActivity.class);
         toolbarButtons(login,cartActivity,userPage);
 
+
+        Spinner dropdown = findViewById(R.id.productQuantity);
+
+        Integer[] items = new Integer[]{1, 2, 3,4,5};
+
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+
+        dropdown.setAdapter(adapter);
+        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Object item = adapterView.getItemAtPosition(i);
+                if(item!=null){
+                    quantity = (Integer)item;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                quantity = 1;
+            }
+        });
+
         productId = getIntent().getExtras().getString("productId");
         getProductDetails(productId);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.merchantRecycler);
+        mRecyclerView = findViewById(R.id.merchantRecycler);
 
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
-        // use a linear layout manager
+
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        // specify an adapter (see also next example)
         mAdapter = new ProductDetailsAdaptor(merchantList, ProductDetailsActivity.this);
         mRecyclerView.setAdapter(mAdapter);
 
-//        final TextView name = findViewById(R.id.name);
-//        final TextView brand = findViewById(R.id.brand);
-//        final TextView rating = findViewById(R.id.rating);
-//        final TextView stock = findViewById(R.id.stock);
-//        final TextView description = findViewById(R.id.description);
-//        final TextView attributes = findViewById(R.id.attributes);
-//        final ImageView image = findViewById(R.id.productImage);
-//
-//        name.setText(product.getProductName());
-//        brand.setText(product.getBrand());
-//        //rating.setText(product.getMerchants().get(0).getRating());
-//        stock.setText(product.getStock().toString());
-//        description.setText(product.getDescription());
-//        attributes.setText(product.getAttribute().toString());
-//        Glide.with(image.getContext()).load(product.getImages().get(0))
-//                .thumbnail(0.5f)
-//                .crossFade()
-//                .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                .into(image);
     }
 
     @Override
@@ -113,9 +128,11 @@ public class ProductDetailsActivity extends BaseActivity implements ProductDetai
             startActivity(loginIntent);
         }
         else{
+            Log.d("API",id);
             cart.putExtra("productId", productId);
             cart.putExtra("merchantId", id);
-            cart.putExtra("price",price );
+            cart.putExtra("price",Double.parseDouble(price));
+            cart.putExtra("quantity", quantity);
             startActivity(cart);
         }
     }
@@ -128,17 +145,17 @@ public class ProductDetailsActivity extends BaseActivity implements ProductDetai
             @Override
             public void onResponse(Call<ProductDTO> call, Response<ProductDTO> response) {
                 product = response.body();
-                System.out.println(product.getMerchants());
+                System.out.println("api"+product.toString());
                 merchantList.clear();
-                Log.d("API",product.getMerchants().get(0).getName());
-                merchantList .addAll(product.getMerchants());
+
+                merchantList .addAll(product.getMerchantList());
                 mAdapter.notifyDataSetChanged();
 
-                final TextView name = findViewById(R.id.name);
+                final TextView name = findViewById(R.id.productName);
                 final TextView brand = findViewById(R.id.brand);
-                //final TextView rating = findViewById(R.id.rating);
+                final TextView rating = findViewById(R.id.rating);
                 final TextView stock = findViewById(R.id.stock);
-                final TextView description = findViewById(R.id.descriptionContent);
+                final TextView description = findViewById(R.id.description);
                 final TextView height = findViewById(R.id.heightContent);
                 final TextView weight = findViewById(R.id.weightContent);
                 final TextView colour = findViewById(R.id.colourContent);
@@ -147,14 +164,17 @@ public class ProductDetailsActivity extends BaseActivity implements ProductDetai
                 final ImageView image = findViewById(R.id.productImage);
                 final TextView price = findViewById(R.id.price);
 
-                name.setText(product.getProductName());
-                brand.setText("By: " + product.getBrand());
-                price.setText("Rs. " + product.getPrice().toString());
-                //rating.setText(product.getMerchants().get(0).getRating());
+                name.setText(product.getName());
+               // brand.setText("By: " + product.getBrand());
+                if(product.getDefaultMerchantPrice()!=null){
+                    price.setText("Rs. " + product.getDefaultMerchantPrice().toString());
+                }
+
+                rating.setText("Rating:  " + product.getDefaultRating().toString()+ "/5");
                 if(product.getStock()>0) {
                     stock.setText("In Stock");
                 }
-                description.setText(product.getDescription());
+                description.setText(product.getDiscription());
 
                 List<Map> list = product.getAttribute(); // this is what you have already
 
@@ -171,7 +191,7 @@ public class ProductDetailsActivity extends BaseActivity implements ProductDetai
                         if(key.equals("weight")){
                             weight.setText(value.toString());
                         }
-                        if(key.equals("colour")){
+                        if(key.equals("color")){
                             colour.setText(value.toString());
                         }
                         if(key.equals("materials")){
@@ -201,4 +221,42 @@ public class ProductDetailsActivity extends BaseActivity implements ProductDetai
         });
 
     }
+//    void getProductListFromSorl(String category){
+//        SearchAPI searchAPI=retrofitSearch.create(SearchAPI.class);
+//        String query="category:"+category;
+//        Call<SearchResponse> list=searchAPI.search(query,"json");
+//        list.enqueue(new Callback<SearchResponse>() {
+//            @Override
+//            public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
+//                System.out.println("call"+response.body());
+//                mAdapter = new ProductListAdaptor(productList, ProductListActivity.this);
+//                mRecyclerView.setAdapter(mAdapter);
+//
+//                for (DocsItem docsItem:response.body().getResponse().getDocs()){
+//                    ProductDTO productDTO=new ProductDTO();
+//                    productDTO.setBrand(docsItem.getBrand().get(0));
+//                    productDTO.setCategory(docsItem.getCategory().get(0));
+//                    productDTO.setImages(docsItem.getImages());
+//                    productDTO.setId(docsItem.getId());
+//                    productDTO.setName(docsItem.getName().get(0));
+//                    productDTO.setDefaultMerchantPrice(docsItem.getDefaultMerchantPrice().get(0).doubleValue());
+//                    productDTO.setDiscription(docsItem.getDiscription().get(0));
+//                    productDTO.setDiscription(docsItem.getDiscription().get(0));
+//                    Log.d("API",productDTO.toString());
+//                    productList.add(productDTO);
+//                }
+//                mAdapter.notifyDataSetChanged();
+//
+//                //   Log.d("API","success"+response.body().getResponse().getDocs().get(0));
+//            }
+//
+//            @Override
+//            public void onFailure(Call<SearchResponse> call, Throwable t) {
+//                Log.d("API","failed"+t.getMessage());
+//
+//            }
+//        });
+//
+//    }
+
 }

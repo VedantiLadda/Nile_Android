@@ -20,7 +20,10 @@ import com.example.vedantiladda.ecommerce.LoginAndSignup.LoginActivity;
 import com.example.vedantiladda.ecommerce.LogoutAndEditProfile.LogoutActivity;
 import com.example.vedantiladda.ecommerce.R;
 import com.example.vedantiladda.ecommerce.cart.Cart_Activity;
+import com.example.vedantiladda.ecommerce.model.OrderNoDTO;
 import com.example.vedantiladda.ecommerce.model.ProductDTO;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,14 +46,18 @@ public class BuyActivity extends BaseActivity implements BuyInterface {
     private List<ProductDTO> productList = new ArrayList<>();
     OkHttpClient client = new OkHttpClient.Builder().build();
 
+    Gson gson = new GsonBuilder()
+            .setLenient()
+            .create();
+
     final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://10.177.2.196:8080") // need to change the url
-            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("http://10.177.2.196:8089") // need to change the url
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .client(client)
             .build();
 
     final Retrofit retrofit2 = new Retrofit.Builder()
-            .baseUrl("http://10.177.2.201:8080") // need to change the url
+            .baseUrl("http://10.177.2.196:8080") // need to change the url
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build();
@@ -146,8 +153,8 @@ public class BuyActivity extends BaseActivity implements BuyInterface {
                             @Override
                             public void onResponse(Call<String> call, Response<String> response) {
                                 //set the text orderid
-                                Log.d("count", response.body());
                                 TextView orderId1 = (TextView) findViewById(R.id.orderId);
+                                Log.d("APIL",response.body());
                                 orderId1.setText(response.body());
                                 Toast.makeText(BuyActivity.this, "success", Toast.LENGTH_SHORT).show();
 
@@ -155,9 +162,9 @@ public class BuyActivity extends BaseActivity implements BuyInterface {
 
                             @Override
                             public void onFailure(Call<String> call, Throwable t) {
-                                Log.d("API", t.getMessage());
+                                Log.d("APILE", t.getMessage());
                                 System.out.println(t);
-                             //   Toast.makeText(BuyActivity.this, "failed!", Toast.LENGTH_SHORT).show();
+                                //   Toast.makeText(BuyActivity.this, "failed!", Toast.LENGTH_SHORT).show();
 
 
                             }
@@ -191,7 +198,7 @@ public class BuyActivity extends BaseActivity implements BuyInterface {
         //
         double sum = 0;
         for (ProductDTO productDTO : productList) {
-            sum += productDTO.getPrice();
+            sum += productDTO.getDefaultMerchantPrice() ;
         }
         return sum;
 

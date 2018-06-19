@@ -1,6 +1,7 @@
 package com.example.vedantiladda.ecommerce;
 
 import com.example.vedantiladda.ecommerce.model.Category;
+import com.example.vedantiladda.ecommerce.model.OrderNoDTO;
 import com.example.vedantiladda.ecommerce.model.ProductDTO;
 
 import java.util.List;
@@ -32,8 +33,8 @@ public interface IApiCall {
 
     //add item to te cart need to send user id and product id
 
-    @GET("/cart/addToCart/{userId}/{productId}/{merchantId}/{productPrice}")
-    Call <Void> addProduct(@Path("userId") String userId,@Path("productId") String productId,@Path("merchantId") String merchantId, @Path("productPrice") String productPrice);
+    @GET("/cart/addToCart/{userId}/{productId}/{merchantId}/{quantity}/{price}")
+    Call <Void> addProduct(@Path("userId") String userId,@Path("productId") String productId,@Path("merchantId") String merchantId,@Path("quantity") Integer quantity, @Path("price") Double price);
 
     @POST("/product/getProductsByIds")
     Call <List<ProductDTO>> getCartProducts(@Body List<String> stringList);

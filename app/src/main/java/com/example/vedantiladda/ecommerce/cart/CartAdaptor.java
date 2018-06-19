@@ -44,8 +44,9 @@ public class CartAdaptor extends RecyclerView.Adapter<CartAdaptor.CartHolder>  {
       //  productHolder.imageView.setI //ask how to set the image
        // productHolder.txtBrand.setText(products.get(i).getProductId); //.get will be from the Product class.
         cartHolder.txtBrand.setText(products.get(i).getBrand());
-        cartHolder.txtProductName.setText(products.get(i).getProductName());
-        cartHolder.txtPrice.setText(products.get(i).getPrice().toString());
+        cartHolder.txtProductName.setText(products.get(i).getName());
+        cartHolder.txtPrice.setText(products.get(i).getDefaultMerchantPrice().toString());
+        cartHolder.proQuantity.setText(1+"");
 
         Glide.with(cartHolder.imageView.getContext()).load(products.get(i).getImages().get(0))
                 .thumbnail(0.5f)
@@ -56,7 +57,7 @@ public class CartAdaptor extends RecyclerView.Adapter<CartAdaptor.CartHolder>  {
         cartHolder.removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String productId = String.valueOf(products.get(i).getProductId());
+                String productId = String.valueOf(products.get(i).getId());
                 cartInterface.onClickRemove(productId);
             }
         });
@@ -77,6 +78,7 @@ public class CartAdaptor extends RecyclerView.Adapter<CartAdaptor.CartHolder>  {
         TextView txtProductName;
         TextView txtPrice;
         Button removeButton;
+        TextView proQuantity;
 
         public CartHolder(View view){
             super(view);
@@ -86,6 +88,7 @@ public class CartAdaptor extends RecyclerView.Adapter<CartAdaptor.CartHolder>  {
             txtProductName = (TextView) itemView.findViewById(R.id.productname);
             txtPrice = (TextView) itemView.findViewById(R.id.price);
             removeButton = (Button) itemView.findViewById(R.id.remove);
+            proQuantity = (TextView) itemView.findViewById(R.id.proquantity);
 
         }
     }

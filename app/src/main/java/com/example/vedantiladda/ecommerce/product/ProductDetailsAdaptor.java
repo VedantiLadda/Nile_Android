@@ -44,7 +44,10 @@ public class ProductDetailsAdaptor extends RecyclerView.Adapter<ProductDetailsAd
         merchantHolder.addCart.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                String id = merchant.getId();
+                Log.d("APIAD",merchant.getmId()+"");
+                Log.d("API",merchant+"");
+
+                String id = merchant.getmId();
                 String price = merchant.getPrice().toString();
                 communicator.onClickButton(id, price);
             }

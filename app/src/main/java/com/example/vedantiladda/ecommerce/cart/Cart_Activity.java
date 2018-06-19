@@ -33,19 +33,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Cart_Activity extends BaseActivity implements CartInterface {
     private RecyclerView mRecyclerView;
-    static String url1="http://10.177.2.196:8080";
+    static String url1="http://10.177.2.196:8089";
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<ProductDTO> productList = new ArrayList<>();
     OkHttpClient client = new OkHttpClient.Builder().build();
 
     final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://10.177.2.196:8080") // need to change the url
+            .baseUrl("http://10.177.2.196:8089") // need to change the url
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build();
     final Retrofit retrofit2 = new Retrofit.Builder()
-            .baseUrl("http://10.177.2.201:8080") // need to change the url
+            .baseUrl("http://10.177.2.196:8080") // need to change the url
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build();
@@ -131,7 +131,7 @@ public class Cart_Activity extends BaseActivity implements CartInterface {
         getCartId.enqueue(new Callback<List<String>>() {
             @Override
             public void onResponse(Call<List<String>> call, Response<List<String>> response) {
-                url1 = "http://10.177.2.201:8080";
+               // url1 = "http://10.177.2.201:8080";
                 IApiCall iApiCall2 = retrofit2.create(IApiCall.class);
                 Log.i("application", "onResponse: "+response.body());
                 final Call<List<ProductDTO>> getCartProducts = iApiCall2.getCartProducts(response.body());
@@ -169,8 +169,8 @@ public class Cart_Activity extends BaseActivity implements CartInterface {
 
     @Override
     public void onClickRemove(String productId) {
-      final  String userId1 = userId;
-     //   url1="http://10.177.2.196:8080";
+        final  String userId1 = userId;
+        //   url1="http://10.177.2.196:8080";
 
         IApiCall iApiCall = retrofit.create(IApiCall.class);
         final Call<Boolean> removeProduct = iApiCall.removeProductCartId(userId1,productId);
@@ -180,40 +180,40 @@ public class Cart_Activity extends BaseActivity implements CartInterface {
 
                 //if the response is true . this says the product is deleted.
                 //check if the condition checking is right
-                    //the response body is true..
-                    //refresh the cart view again
-                    IApiCall iApiCall1 = retrofit.create(IApiCall.class);
-                    final Call<List<String>> getCartId = iApiCall1.getCartId(userId1);
-                    // this is the call to fet the cart product list
-                    getCartId.enqueue(new Callback<List<String>>() {
-                        @Override
-                        public void onResponse(Call<List<String>> call, Response<List<String>> response) {
-                           // url1 = "http://10.177.2.201:8080";
-                            IApiCall iApiCall = retrofit2.create(IApiCall.class);
-                            final Call<List<ProductDTO>> getCartProducts = iApiCall.getCartProducts(response.body());
-                            getCartProducts.enqueue(new Callback<List<ProductDTO>>() {
-                                @Override
-                                public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
-                                    productList.clear();
-                                    productList.addAll(response.body());
-                                    TextView cart=findViewById(R.id.cart);
-                                    cart.setText(response.body().size()+"");
-                                    mAdapter.notifyDataSetChanged();
-                                }
+                //the response body is true..
+                //refresh the cart view again
+                IApiCall iApiCall1 = retrofit.create(IApiCall.class);
+                final Call<List<String>> getCartId = iApiCall1.getCartId(userId1);
+                // this is the call to fet the cart product list
+                getCartId.enqueue(new Callback<List<String>>() {
+                    @Override
+                    public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                        // url1 = "http://10.177.2.201:8080";
+                        IApiCall iApiCall = retrofit2.create(IApiCall.class);
+                        final Call<List<ProductDTO>> getCartProducts = iApiCall.getCartProducts(response.body());
+                        getCartProducts.enqueue(new Callback<List<ProductDTO>>() {
+                            @Override
+                            public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
+                                productList.clear();
+                                productList.addAll(response.body());
+                                TextView cart=findViewById(R.id.cart);
+                                cart.setText(response.body().size()+"");
+                                mAdapter.notifyDataSetChanged();
+                            }
 
-                                @Override
-                                public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
+                            @Override
+                            public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
 
-                                }
-                            });
+                            }
+                        });
 
-                        }
+                    }
 
-                        @Override
-                        public void onFailure(Call<List<String>> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<List<String>> call, Throwable t) {
 
-                        }
-                    });
+                    }
+                });
             }
 
             @Override

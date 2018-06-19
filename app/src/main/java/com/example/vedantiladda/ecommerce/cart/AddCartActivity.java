@@ -43,13 +43,13 @@ public class AddCartActivity extends BaseActivity implements CartInterface {
     OkHttpClient client = new OkHttpClient.Builder().build();
     String userId;
     final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://10.177.2.196:8080") // need to change the url
+            .baseUrl("http://10.177.2.196:8089") // need to change the url
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build();
 
     final Retrofit retrofit2 = new Retrofit.Builder()
-            .baseUrl("http://10.177.2.201:8080") // need to change the url
+            .baseUrl("http://10.177.2.196:8080") // need to change the url
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build();
@@ -98,11 +98,12 @@ public class AddCartActivity extends BaseActivity implements CartInterface {
         Intent intent1 = getIntent();
         String productId = intent1.getStringExtra("productId");
         String merchantId = intent1.getStringExtra("merchantId");
-        String productPrice = intent1.getStringExtra("price");
+        Double productPrice = intent1.getDoubleExtra("price",0.0);
+        Integer productQuantity = intent1.getIntExtra("quantity",1);
 
 
         IApiCall iApiCall = retrofit.create(IApiCall.class);
-        final Call<Void> addProduct = iApiCall.addProduct(userId,productId,merchantId,productPrice);
+        final Call<Void> addProduct = iApiCall.addProduct(userId,productId,merchantId,productQuantity,productPrice);
         addProduct.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -113,7 +114,6 @@ public class AddCartActivity extends BaseActivity implements CartInterface {
                 getAll.enqueue(new Callback<List<String>>() {
                     @Override
                     public void onResponse(Call<List<String>> call, Response<List<String>> response) {
-                        url = "http://10.177.2.201:8080";
                         final IApiCall iApiCall = retrofit2.create(IApiCall.class);
                         final Call<List<ProductDTO>> getCartProducts = iApiCall.getCartProducts(response.body());
                         getCartProducts.enqueue(new Callback<List<ProductDTO>>() {
@@ -129,6 +129,7 @@ public class AddCartActivity extends BaseActivity implements CartInterface {
 
                             @Override
                             public void onFailure(Call<List<ProductDTO>> call, Throwable t) {
+                                    Log.d("API",t.getMessage());
 
                             }
                         });
@@ -138,6 +139,7 @@ public class AddCartActivity extends BaseActivity implements CartInterface {
 
                     @Override
                     public void onFailure(Call<List<String>> call, Throwable t) {
+                        Log.d("API",t.getMessage());
 
                     }
                 });
@@ -163,6 +165,8 @@ public class AddCartActivity extends BaseActivity implements CartInterface {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
+                Log.d("API",t.getMessage());
+
 
             }
         });
@@ -204,6 +208,8 @@ public class AddCartActivity extends BaseActivity implements CartInterface {
                                 public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {
                                     productList.clear();
                                     productList.addAll(response.body());
+                                    TextView cart=findViewById(R.id.cart);
+                                    cart.setText(response.body().size()+"");
                                     mAdapter.notifyDataSetChanged();
                                 }
 

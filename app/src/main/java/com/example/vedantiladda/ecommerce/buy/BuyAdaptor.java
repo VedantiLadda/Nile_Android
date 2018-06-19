@@ -38,9 +38,10 @@ public class BuyAdaptor extends RecyclerView.Adapter<BuyAdaptor.BuyHolder> {
     public void onBindViewHolder(@NonNull BuyAdaptor.BuyHolder buyHolder, int i) {
 
         //buyHolder.txtsno.setText(i);//i is anyway continous numbers...
-        buyHolder.txtproname.setText(products.get(i).getProductName());
-        buyHolder.txtproprice.setText(products.get(i).getPrice().toString());
+        buyHolder.txtproname.setText(products.get(i).getName());
+        buyHolder.txtproprice.setText(products.get(i).getDefaultMerchantPrice().toString());
         buyHolder.txtsno.setText((i+1)+"");
+        buyHolder.txtproQuantity.setText(1+" ");
 
     }
 
@@ -54,12 +55,14 @@ public class BuyAdaptor extends RecyclerView.Adapter<BuyAdaptor.BuyHolder> {
         TextView txtsno;
         TextView txtproname;
         TextView txtproprice;
+        TextView txtproQuantity;
 
         public BuyHolder(View view){
             super(view);
             txtsno =(TextView) itemView.findViewById(R.id.sno);
             txtproname = (TextView) itemView.findViewById(R.id.proname);
             txtproprice = (TextView) itemView.findViewById(R.id.proprice);
+            txtproQuantity = (TextView) itemView.findViewById(R.id.quantity);
 
         }
     }

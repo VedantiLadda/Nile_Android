@@ -41,7 +41,7 @@ public class LaunchAdaptor extends RecyclerView.Adapter<LaunchAdaptor.CategoryHo
 
         Glide.with(categoryHolder.categoryImage.getContext()).load(category.getCategoryImage())
                 .thumbnail(0.5f)
-                .crossFade()
+                .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(categoryHolder.categoryImage);
         categoryHolder.categoryName.setText(category.getCategoryName());
